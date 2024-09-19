@@ -4,9 +4,10 @@
   - When I do it I think that there should be 3 parts:
     1. A TS library that doesn't use vue that interfaces with the storage/network-communications strategy
     2. A vue reactive array that listens adjusts according to events emitted from the TS library. Except for the ones that have "add" in the name, the events should be able to be called just the id of the object. The events are:
-    - addAtIndex
-    - remove
     - moveToIndex
+    - remove
+    - addAtIndex
+      - Todo: Would it be more simple if we just had an `add` and then used moveToIndex? Any advantages to having addAtIndex?
     - Todo: Maybe not needed events: (Investigate if there would be any benefits of not just always using addAtIndex or moveToIndex according to vue reactivity's quirks)
       - addToEnd
       - moveToEnd
