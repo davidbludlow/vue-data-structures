@@ -23,3 +23,9 @@ export function createHelperObjectProvider<
     return helper;
   };
 }
+
+// ideas:
+
+// if I do the composition api, then how do I deal with overriding just one property that is used as a helper for other things ?
+  
+//   I maybe make that property pass-in-able in the the composition function. That way behavior can be overridden.
