@@ -3,7 +3,7 @@
 - Idea 1 (I like Idea 2 better, or maybe we can offer both)
   - When I do it I think that there should be 3 parts:
     1. A TS library that doesn't use vue that interfaces with the storage/network-communications strategy
-    2. A vue reactive array that listens adjusts according to events emitted from the TS library. Except for the ones that have "add" in the name, the events should be able to be called just the id of the object. 
+    2. A vue reactive array that listens adjusts according to events emitted from the TS library. Except for the ones that have "add" in the name, the events should be able to be called just the id of the object.
     - The events are:
       - moveToIndex
       - remove
