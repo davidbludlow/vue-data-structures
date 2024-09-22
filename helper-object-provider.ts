@@ -2,6 +2,8 @@
 // https://github.com/davidbludlow/vue-data-structures/blob/main/helper-object-provider.ts
 // which had an MIT license, when it was copied.
 
+import { reactive } from 'npm:vue';
+
 /** Creates helper object provider. When run, a helper object provider will
  * create a helper object for a given `model` object, or, if a helper object has
  * already been created for that `model` then it will return the previously
@@ -24,8 +26,14 @@ export function createHelperObjectProvider<
   };
 }
 
-// ideas:
-
-// if I do the composition api, then how do I deal with overriding just one property that is used as a helper for other things ?
-
-//   I maybe make that property pass-in-able in the the composition function. That way behavior can be overridden.
+export function createReactiveHelperObjectProvider<
+  TModel extends object,
+  THelper extends object,
+>(
+  factory: (model: TModel) => THelper,
+): (model: TModel) => THelper {
+  const helperObjectProvider = createHelperObjectProvider((model: TModel) =>
+    factory(reactive(model))
+  );
+  return (model: TModel) => reactive(helperObjectProvider(model));
+}
