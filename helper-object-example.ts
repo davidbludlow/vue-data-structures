@@ -1,11 +1,11 @@
 import { computed, ref, watchEffect } from 'npm:vue';
-import { createReactiveHelperObjectProvider } from './helper-object-provider.ts';
+import { createHelperObjectProvider } from './helper-object-provider.ts';
 
 type Foo = {
   a: number;
 };
 
-const fooHelperObjectProvider = createReactiveHelperObjectProvider(
+const fooHelperObjectProvider = createHelperObjectProvider(
   (model: Foo) => {
     const nonReactive = {
       // This is a non-reactive property. But it is still be publicly accessible.
@@ -62,16 +62,9 @@ console.log('incrementing b');
 fooHelperObject.incrementB();
 await wait(); // watchEffect fires
 
-console.log('incrementing c');
+console.log('incrementing c (non-reactive)');
 fooHelperObject.nonReactive.c++;
-await wait(); // nothing
-
-console.log('nothing happened because c is not reactive.');
-console.log(
-  "If we forcibly call logState(), we see the change in c, but we will not see a change in `sum`, because that is a computed property, and changing non-reactive stuff doesn't trigger recalculation.",
-  fooHelperObject.logState(),
-);
-await wait(); // nothing
+await wait(); // nothing happens
 
 console.log('incrementing a');
 fooHelperObject.model.a++;
