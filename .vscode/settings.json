@@ -86,5 +86,8 @@
       "languageId": "vue",
       "dictionaries": ["html", "fonts", "typescript", "css"]
     }
-  ]
+  ],
+  // Make vscode not warn you about vue's hybrid TS mode being suppressed to
+  // make way for the the vscode deno extension.
+  "vue.server.hybridMode": false
 }
