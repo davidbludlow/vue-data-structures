@@ -1,5 +1,5 @@
 {
-  "deno.enable": true,
+  "deno.enable": false,
   "deno.lint": true,
   "deno.unstable": true,
   "files.autoSave": "afterDelay",
@@ -8,21 +8,21 @@
   "editor.insertSpaces": true,
   "editor.tabSize": 2,
   "[typescript]": {
-    "editor.defaultFormatter": "denoland.vscode-deno",
+    "editor.defaultFormatter": "dprint.dprint",
     "editor.formatOnSave": true,
     "editor.formatOnSaveMode": "file",
     "editor.insertSpaces": true,
     "editor.tabSize": 2
   },
   "[javascript]": {
-    "editor.defaultFormatter": "denoland.vscode-deno",
+    "editor.defaultFormatter": "dprint.dprint",
     "editor.formatOnSave": true,
     "editor.formatOnSaveMode": "file",
     "editor.insertSpaces": true,
     "editor.tabSize": 2
   },
   "[html]": {
-    "editor.defaultFormatter": "denoland.vscode-deno",
+    "editor.defaultFormatter": "dprint.dprint",
     "editor.formatOnSave": true,
     "editor.formatOnSaveMode": "file",
     "editor.insertSpaces": true,
@@ -36,27 +36,29 @@
     "editor.tabSize": 2
   },
   "[json]": {
-    "editor.defaultFormatter": "denoland.vscode-deno",
+    "editor.defaultFormatter": "dprint.dprint",
     "editor.formatOnSave": true,
     "editor.formatOnSaveMode": "file",
     "editor.insertSpaces": true,
     "editor.tabSize": 2
   },
   "[jsonc]": {
-    "editor.defaultFormatter": "denoland.vscode-deno",
+    "editor.defaultFormatter": "dprint.dprint",
     "editor.formatOnSave": true,
     "editor.formatOnSaveMode": "file",
     "editor.insertSpaces": true,
     "editor.tabSize": 2
   },
   "[markdown]": {
-    "editor.defaultFormatter": "denoland.vscode-deno",
+    "editor.defaultFormatter": "dprint.dprint",
     "editor.formatOnSave": true,
     "editor.formatOnSaveMode": "file",
     "editor.insertSpaces": true,
     "editor.tabSize": 2
   },
   "[vue]": {
+    // As of 2024, dprint's vue formatter is not quite bug-free enough for my
+    // liking. I expect it to get better soon.
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.formatOnSave": true,
     "editor.formatOnSaveMode": "file",
@@ -64,7 +66,7 @@
     "editor.tabSize": 2
   },
   "[yaml]": {
-    "editor.defaultFormatter": "denoland.vscode-deno",
+    "editor.defaultFormatter": "dprint.dprint",
     "editor.formatOnSave": true,
     "editor.formatOnSaveMode": "file",
     "editor.insertSpaces": true,
@@ -87,7 +89,7 @@
       "dictionaries": ["html", "fonts", "typescript", "css"]
     }
   ],
-  // Make vscode not warn you about vue's hybrid TS mode being suppressed to
-  // make way for the the vscode deno extension.
+  // We don't have .vue files so hybrid mode isn't needed. This will reduce
+  // complication.
   "vue.server.hybridMode": false
 }
