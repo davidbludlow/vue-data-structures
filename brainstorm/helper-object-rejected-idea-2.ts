@@ -1,5 +1,5 @@
-import { computed, reactive, ref, toRefs, watchEffect } from 'npm:vue';
-import type { Reactive, ToRefs } from 'npm:vue';
+import { computed, reactive, ref, toRefs, watchEffect } from 'vue';
+import type { Reactive, ToRefs } from 'vue';
 
 // **** This idea was rejected because: ****
 // - lets say your `foo` model type has a property `foo.bar` that is only

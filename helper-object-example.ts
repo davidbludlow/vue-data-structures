@@ -1,4 +1,4 @@
-import { computed, ref, watchEffect } from 'npm:vue';
+import { computed, ref, watchEffect } from 'vue';
 import { createHelperObjectProvider } from './helper-object-provider.ts';
 
 type Foo = {

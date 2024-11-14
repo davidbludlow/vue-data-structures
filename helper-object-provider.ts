@@ -2,7 +2,7 @@
 // https://github.com/davidbludlow/vue-data-structures/blob/main/helper-object-provider.ts
 // which had an MIT license, when it was copied.
 
-import { type Reactive, reactive } from 'npm:vue';
+import { type Reactive, reactive } from 'vue';
 
 /** Creates helper object provider. When run, a helper object provider will
  * create a helper object for a given `model` object, or, if a helper object has

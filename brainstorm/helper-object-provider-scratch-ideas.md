@@ -1,7 +1,7 @@
 Alternate form of the representing types (though there are even more than this):
 
 ```ts
-import type { UnwrapNestedRefs } from 'npm:vue';
+import type { UnwrapNestedRefs } from 'vue';
 
 export function createReactiveHelperObjectProvider<
   TModel extends object,

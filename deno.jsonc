@@ -5,5 +5,8 @@
   "fmt": {
     "proseWrap": "preserve",
     "singleQuote": true
+  },
+  "imports": {
+    "vue": "npm:vue@^3.5.12"
   }
 }

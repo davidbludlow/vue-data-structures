@@ -1,7 +1,7 @@
 {
   "version": "4",
   "specifiers": {
-    "npm:vue@*": "3.5.12"
+    "npm:vue@^3.5.12": "3.5.12"
   },
   "npm": {
     "@babel/helper-string-parser@7.25.9": {
@@ -139,5 +139,10 @@
         "@vue/shared"
       ]
     }
+  },
+  "workspace": {
+    "dependencies": [
+      "npm:vue@^3.5.12"
+    ]
   }
 }
