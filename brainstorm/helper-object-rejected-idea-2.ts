@@ -24,14 +24,21 @@ export function createHelperObjectProvider<
 > {
   // Do not worry about the performance of `WeakMap`. Vue already uses `WeakMap`
   // extremely frequently (like every time you use a reactive object).
-  const cache = new WeakMap<Reactive<TModel>, Reactive<THelper>>();
+  const cache = new WeakMap<
+    Reactive<TModel>,
+    Reactive<
+      & { readonly model: Reactive<TModel> }
+      & ToRefs<Reactive<TModel>>
+      & THelper
+    >
+  >();
   const ret = (model: TModel) => {
     /** `reactiveModel === model` will be true if `model` was already reactive.
      * (Vue 3 internally uses `WeakMap` to cache reactive `Proxy`s to make that
      * possible.) */
     const reactiveModel = reactive(model);
-    // const cached = cache.get(reactiveModel);
-    // if (cached) return cached;
+    const cached = cache.get(reactiveModel);
+    if (cached) return cached;
     const skeletonOfHelper = factory(reactiveModel);
     // Calling `reactive()` on it will make it so you do not need to call
     // `.value` on the refs and computed. (See
@@ -63,7 +70,7 @@ const fooHelperObjectProvider = createHelperObjectProvider(
 
     // code very similar to the code for a vue composable (sometimes called a
     // mixin). (See https://vuejs.org/guide/reusability/composables.html , though
-    // it isn't exactly like that and if fills a different purpose than that.)
+    // it isn't exactly like that and it fills a different purpose than that.)
 
     const b = ref(100);
 
