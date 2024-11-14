@@ -12,49 +12,49 @@
     "editor.formatOnSave": true,
     "editor.formatOnSaveMode": "file",
     "editor.insertSpaces": true,
-    "editor.tabSize": 2
+    "editor.tabSize": 2,
   },
   "[javascript]": {
     "editor.defaultFormatter": "dprint.dprint",
     "editor.formatOnSave": true,
     "editor.formatOnSaveMode": "file",
     "editor.insertSpaces": true,
-    "editor.tabSize": 2
+    "editor.tabSize": 2,
   },
   "[html]": {
     "editor.defaultFormatter": "dprint.dprint",
     "editor.formatOnSave": true,
     "editor.formatOnSaveMode": "file",
     "editor.insertSpaces": true,
-    "editor.tabSize": 2
+    "editor.tabSize": 2,
   },
   "[handlebars]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.formatOnSave": true,
     "editor.formatOnSaveMode": "file",
     "editor.insertSpaces": true,
-    "editor.tabSize": 2
+    "editor.tabSize": 2,
   },
   "[json]": {
     "editor.defaultFormatter": "dprint.dprint",
     "editor.formatOnSave": true,
     "editor.formatOnSaveMode": "file",
     "editor.insertSpaces": true,
-    "editor.tabSize": 2
+    "editor.tabSize": 2,
   },
   "[jsonc]": {
     "editor.defaultFormatter": "dprint.dprint",
     "editor.formatOnSave": true,
     "editor.formatOnSaveMode": "file",
     "editor.insertSpaces": true,
-    "editor.tabSize": 2
+    "editor.tabSize": 2,
   },
   "[markdown]": {
     "editor.defaultFormatter": "dprint.dprint",
     "editor.formatOnSave": true,
     "editor.formatOnSaveMode": "file",
     "editor.insertSpaces": true,
-    "editor.tabSize": 2
+    "editor.tabSize": 2,
   },
   "[vue]": {
     // As of 2024, dprint's vue formatter is not quite bug-free enough for my
@@ -63,14 +63,14 @@
     "editor.formatOnSave": true,
     "editor.formatOnSaveMode": "file",
     "editor.insertSpaces": true,
-    "editor.tabSize": 2
+    "editor.tabSize": 2,
   },
   "[yaml]": {
     "editor.defaultFormatter": "dprint.dprint",
     "editor.formatOnSave": true,
     "editor.formatOnSaveMode": "file",
     "editor.insertSpaces": true,
-    "editor.tabSize": 2
+    "editor.tabSize": 2,
   },
   // cSpell settings go with the vscode extension that has the ID
   // streetsidesoftware.code-spell-checker
@@ -80,16 +80,16 @@
   // words in "cSpell.ignoreWords"
   "cSpell.ignoreWords": [
     "dprint",
-    "malva"
+    "malva",
   ],
   "cSpell.enableFiletypes": ["vue"],
   "cSpell.languageSettings": [
     {
       "languageId": "vue",
-      "dictionaries": ["html", "fonts", "typescript", "css"]
-    }
+      "dictionaries": ["html", "fonts", "typescript", "css"],
+    },
   ],
   // We don't have .vue files so hybrid mode isn't needed. This will reduce
   // complication.
-  "vue.server.hybridMode": false
+  "vue.server.hybridMode": false,
 }
