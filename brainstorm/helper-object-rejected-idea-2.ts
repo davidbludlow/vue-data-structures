@@ -1,5 +1,5 @@
 import { computed, reactive, ref, toRefs, watchEffect } from 'npm:vue';
-import type { ToRefs, UnwrapNestedRefs } from 'npm:vue';
+import type { Reactive, ToRefs } from 'npm:vue';
 
 // **** This idea was rejected because: ****
 // - lets say your `foo` model type has a property `foo.bar` that is only
@@ -12,19 +12,19 @@ export function createHelperObjectProvider<
   TModel extends object,
   THelper extends object,
 >(
-  factory: (model: TModel) => THelper,
+  factory: (model: Reactive<TModel>) => THelper,
   // an alternative return type idea:
   // (model: TModel) =>
-  //   & { readonly model: UnwrapNestedRefs<TModel> }
-  //   & UnwrapNestedRefs<ToRefs<UnwrapNestedRefs<TModel>> & THelper>
-): (model: TModel) => UnwrapNestedRefs<
-  & { readonly model: UnwrapNestedRefs<TModel> }
-  & ToRefs<UnwrapNestedRefs<TModel>>
+  //   & { readonly model: Reactive<TModel> }
+  //   & Reactive<ToRefs<Reactive<TModel>> & THelper>
+): (model: TModel) => Reactive<
+  & { readonly model: Reactive<TModel> }
+  & ToRefs<Reactive<TModel>>
   & THelper
 > {
   // Do not worry about the performance of `WeakMap`. Vue already uses `WeakMap`
   // extremely frequently (like every time you use a reactive object).
-  const cache = new WeakMap<TModel, THelper>();
+  const cache = new WeakMap<Reactive<TModel>, Reactive<THelper>>();
   const ret = (model: TModel) => {
     /** `reactiveModel === model` will be true if `model` was already reactive.
      * (Vue 3 internally uses `WeakMap` to cache reactive `Proxy`s to make that
