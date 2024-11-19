@@ -62,45 +62,6 @@ type Foo = { a: number };
   await wait(); // watchEffect fires
 }
 
-// -------------------------------- Example 2 --------------------------------
-// storing public, non-reactive properties on the augmented object
-{
-  console.log('Example 2');
-  const getAugmentedFoo = createCachedAugmenter((model: Foo) => {
-    const nonReactive = {
-      // This is a non-reactive property. But it is still be publicly accessible.
-      c: 1000,
-    };
-    // This is a private non-reactive property, because it isn't in the returned
-    // object.
-    const d = 1;
-    return {
-      get nonReactive() {
-        return nonReactive;
-      },
-    };
-  });
-
-  const exampleFoo = reactive<Foo>({ a: 10 });
-  const fooAugmented = getAugmentedFoo(exampleFoo);
-  watch(
-    () => fooAugmented.nonReactive.c,
-    () => console.log('This watcher will never fire'),
-  );
-
-  console.log('incrementing c (non-reactive)');
-  // It may seem silly to have to type `.nonReactive` to access `c`, but
-  // according to warning in [this part of the vue
-  // documentation](https://vuejs.org/api/reactivity-advanced.html#shallowreactive)
-  // it is asking for trouble to have a non-reactive property nested in a
-  // reactive property object. It is too easy for programmers to make false
-  // assumptions that way, so this making it explicit/obvious by having to type
-  // `.nonReactive` is a good thing.
-  fooAugmented.nonReactive.c++;
-  await wait();
-  console.log("watcher didn't fire");
-}
-
 async function wait() {
   await new Promise((resolve) => setTimeout(resolve));
   console.log('');
