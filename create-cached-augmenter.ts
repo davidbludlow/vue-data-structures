@@ -51,7 +51,7 @@ export function createCachedAugmenter<
   ModelType extends object,
   AugmentsType extends object,
 >(augmentFactory: (model: Reactive<ModelType>) => AugmentsType): (
-  reactiveOrNotReactiveModel: ModelType,
+  model: ModelType,
 ) => Reactive<AugmentsType & Omit<ModelType, keyof AugmentsType>> {
   type AugmentedModelType = Reactive<
     AugmentsType & Omit<ModelType, keyof AugmentsType>
@@ -59,11 +59,11 @@ export function createCachedAugmenter<
   // Do not worry about the performance of `WeakMap`. Vue already uses `WeakMap`
   // extremely frequently (like every time you use a reactive object).
   const cache = new WeakMap<Reactive<ModelType>, AugmentedModelType>();
-  return (reactiveOrNotReactiveModel: ModelType) => {
+  return (model: ModelType) => {
     /** `reactiveModel === model` will be true if `model` was already reactive.
      * (Vue 3 internally uses `WeakMap` to cache reactive `Proxy`s to make that
      * possible.) */
-    const reactiveModel = reactive(reactiveOrNotReactiveModel);
+    const reactiveModel = reactive(model);
     const cached = cache.get(reactiveModel);
     if (cached) return cached;
     const augments = augmentFactory(reactiveModel) as AugmentsType;
