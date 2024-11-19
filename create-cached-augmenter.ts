@@ -66,17 +66,17 @@ export function createCachedAugmenter<
     const augments = augmentFactory(reactiveModel) as AugmentsType;
     // The `reactive()` is to unwrap any vue `Ref`s, so that `.value` is not
     // needed.
-    const unwrappedAugments = reactive(augments);
+    const reactiveAugments = reactive(augments);
     const proxy = new Proxy(reactiveModel, {
       get(target, property, receiver) {
         if (property in augments) {
-          return Reflect.get(unwrappedAugments, property, receiver);
+          return Reflect.get(reactiveAugments, property, receiver);
         }
         return Reflect.get(target, property, receiver);
       },
       set(target, property, value, receiver) {
         if (property in augments) {
-          unwrappedAugments[property] = value;
+          reactiveAugments[property] = value;
           return true;
         }
         return Reflect.set(target, property, value, receiver);
