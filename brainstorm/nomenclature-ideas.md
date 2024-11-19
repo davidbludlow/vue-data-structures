@@ -2,6 +2,7 @@ use StudentWork objects as an example type of model for this doc
 
 - const getAugmentedStudentWork = createCashedAugmenter(augmentFactory);
   - const augmentedStudentWork = getAugmentedStudentWork(model);
+  - const studentWorkAugmented = getAugmentedStudentWork(model);
 - const retrieveAugmentedStudentWork = ...
 - What I did in my old job
   - const studentWorkViewModelProvider = new StudentWorkViewModelProvider(factoryFunction);

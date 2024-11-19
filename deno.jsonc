@@ -1,6 +1,6 @@
 {
   "tasks": {
-    "dev": "deno run --watch main.ts",
+    "dev": "deno --watch --allow-env=NODE_ENV cached-augmenter-with-examples.ts",
   },
   "fmt": {
     "proseWrap": "preserve",
