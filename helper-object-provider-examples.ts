@@ -13,7 +13,7 @@ type Foo = {
 const fooHelperObjectProvider = createHelperObjectProvider(
   (model: Foo) => {
     const nonReactive = {
-      // This is a non-reactive property. But it is still be publicly accessible.
+      // This is a non-reactive property, but it is still publicly accessible.
       c: 1000,
     };
 
