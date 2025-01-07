@@ -71,18 +71,22 @@ export function createCachedAugmenter<
     // needed.
     const reactiveAugments = reactive(augments);
     const proxy = new Proxy(reactiveModel, {
-      get(target, property, receiver) {
+      get(target, property) {
         if (property in augments) {
-          return Reflect.get(reactiveAugments, property, receiver);
+          return reactiveAugments[property];
         }
-        return Reflect.get(target, property, receiver);
+        return reactiveModel[property];
       },
-      set(target, property, value, receiver) {
+      set(target, property, value) {
         if (property in augments) {
-          reactiveAugments[property] = value;
-          return true;
+          return Reflect.set(
+            reactiveAugments,
+            property,
+            value,
+            reactiveAugments,
+          );
         }
-        return Reflect.set(target, property, value, receiver);
+        return Reflect.set(reactiveModel, property, value, reactiveModel);
       },
       has(target, property) {
         return property in augments || Reflect.has(target, property);
