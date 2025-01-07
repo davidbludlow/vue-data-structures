@@ -1,4 +1,4 @@
-import { createCachedAugmenter } from './create-cached-augmenter.ts';
+import { createCachedAugmenter } from '../src/create-cached-augmenter.ts';
 import { computed, reactive, ref, watchEffect } from 'vue';
 import { assertEquals } from 'https://deno.land/std/testing/asserts.ts';
 

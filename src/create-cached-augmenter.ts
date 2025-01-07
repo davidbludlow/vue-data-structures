@@ -1,11 +1,11 @@
 // This file was copied from
-// https://github.com/davidbludlow/vue-data-structures/blob/main/create-cached-augmenter.ts
+// https://github.com/davidbludlow/vue-data-structures/blob/main/src/create-cached-augmenter.ts
 // which had an MIT license, when it was copied.
 
 import { type Reactive, reactive } from 'vue';
 
 /** See
- * https://github.com/davidbludlow/vue-data-structures/blob/main/create-cached-augmenter-examples.ts
+ * https://github.com/davidbludlow/vue-data-structures/blob/main/examples/create-cached-augmenter-examples.ts
  * for examples. This function creates a factory + cache function for augmented
  * objects. This lets you wrap an object with a vue-reactive proxy that gives it
  * superpowers such as computed values, methods, and other additional properties

@@ -1,5 +1,5 @@
 // This file was copied from
-// https://github.com/davidbludlow/vue-data-structures/blob/main/helper-object-provider.ts
+// https://github.com/davidbludlow/vue-data-structures/blob/main/src/helper-object-provider.ts
 // which had an MIT license, when it was copied.
 
 import { type Reactive, reactive } from 'vue';
@@ -9,7 +9,11 @@ import { type Reactive, reactive } from 'vue';
  * already been created for that `model` then it will return the previously
  * created helper object. `model` should be the information that needs
  * serialization only. `factory` should be a function to create new helper
- * objects. */
+ * objects.
+ *
+ * See
+ * https://github.com/davidbludlow/vue-data-structures/blob/main/examples/helper-object-provider-examples.ts
+ * for examples. */
 export function createHelperObjectProvider<
   TModel extends object,
   THelper extends object,

@@ -1,10 +1,10 @@
 import { computed, ref, watchEffect } from 'vue';
-import { createHelperObjectProvider } from './helper-object-provider.ts';
+import { createHelperObjectProvider } from '../src/helper-object-provider.ts';
 
 // This file shows examples of how to use `createHelperObjectProvider()`. The
 // easiest way to run this file is by running `npm i` then running
 //
-// `deno --watch --allow-env=NODE_ENV helper-object-example.ts`
+// `deno --watch --allow-env=NODE_ENV examples/helper-object-provider-examples.ts`
 
 type Foo = {
   a: number;

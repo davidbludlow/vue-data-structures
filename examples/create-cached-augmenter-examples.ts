@@ -1,10 +1,10 @@
 import { computed, reactive, ref, watchEffect } from 'vue';
-import { createCachedAugmenter } from './create-cached-augmenter.ts';
+import { createCachedAugmenter } from '../src/create-cached-augmenter.ts';
 
 // This file shows examples of how to use `createCachedAugmenter()`. The easiest
 // way to run this file is by running `npm i` then running
 //
-// `deno --watch --allow-env=NODE_ENV create-cached-augmenter-examples.ts`
+// `deno --watch --allow-env=NODE_ENV examples/create-cached-augmenter-examples.ts`
 
 type Foo = { a: number };
 // -------------------------------- Example 1 --------------------------------
