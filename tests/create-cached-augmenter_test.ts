@@ -96,3 +96,22 @@ Deno.test('createCachedAugmenter should create augmented object using class styl
   await wait();
   assertEquals(log, 'a: 11, b: 100, sum: 111');
 });
+
+Deno.test('createCachedAugmenter should handle additionalParams', async () => {
+  const getAugmentedFoo = createCachedAugmenter(
+    (model: Foo, additionalAddend: number) => {
+      const b = ref(10);
+      const sum = computed(() => model.a + b.value + additionalAddend);
+      return { b, sum };
+    },
+  );
+
+  const exampleFoo = reactive<Foo>({ a: 1 });
+  const fooAugmented = getAugmentedFoo(exampleFoo, 100);
+
+  assertEquals(fooAugmented.sum, 111);
+  fooAugmented.a++;
+  assertEquals(fooAugmented.sum, 112);
+  fooAugmented.b--;
+  assertEquals(fooAugmented.sum, 111);
+});
