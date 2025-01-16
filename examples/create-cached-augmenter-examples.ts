@@ -63,8 +63,8 @@ type Foo = { a: number };
   await wait(); // watchEffect fires
 }
 
-// -------------------------------- Example 2 --------------------------------
-// using a class style for the augments
+// -------------------------------- Example 2 (harder way) --------------------------------
+// Using a class style for the augments. This is the harder way because of some gotchas.
 {
   console.log('Example 2');
   const getAugmentedFoo = createCachedAugmenter((model: Foo) => {

@@ -97,3 +97,22 @@ fooHelperObject.sum; // 120, no need to type `.value`
 ## Examples
 
 You can find more examples in the `examples` directory.
+
+## TypeScript Trouble Shooting
+
+- If you are using Vue 2 you will need to rename `Reactive` to `UnwrapNestedRefs`.
+- If you run into problems, this was tested with TypeScript 5.7.3, so try to use at least that version.
+- TypeScript (TS) doesn't like infinitely recursive types being passed into Vue's `reactive()`. For example, if you have the type
+  ```typescript
+  type ParsedJson =
+    | { [key: string]: ParsedJson }
+    | ParsedJson[]
+    | string
+    | number
+    | boolean
+    | null;
+  ```
+  Then declaring a type like `type D = Reactive<ParsedJson>;` will make TS output an error that says, `Type instantiation is excessively deep and possibly infinite.` That is a problem because we use `reactive()` (which uses `Reactive`) a lot. If you find a better solution please make a pull request, but the best I have thought of is to do `type ParsedJson = any`. After all, `JSON.parse()` returns `any` anyway, so Microsoft probably came to the same conclusion.
+- Using classes (harder way)
+  - Using classes with these tools has some nasty gotchas. See the notes in Example 2 in [examples/create-cached-augmenter-examples.ts]. It may be better to use the composable approach instead of the class approach, but it is still possible either way.
+  - TS may complain if you have `private` properties in your class.
