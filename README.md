@@ -116,3 +116,7 @@ You can find more examples in the `examples` directory.
 - Using classes (harder way)
   - Using classes with these tools has some nasty gotchas. See the notes in Example 2 in [examples/create-cached-augmenter-examples.ts]. It may be better to use the composable approach instead of the class approach, but it is still possible either way.
   - TS may complain if you have `private` properties in your class.
+
+## Less Important Tips
+
+- When writing a composable, if you use the `this` keyword, you are probably making a mistake. Using lambda functions can make TS remind you to not use `this`. Classes are different.
