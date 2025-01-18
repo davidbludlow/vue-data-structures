@@ -1,4 +1,4 @@
-import { computed, reactive, ref, watchEffect } from 'vue';
+import { computed, type Reactive, reactive, ref, watchEffect } from 'vue';
 import { createCachedAugmenter } from '../src/create-cached-augmenter.ts';
 
 // This file shows examples of how to use `createCachedAugmenter()`. The easiest
@@ -11,7 +11,7 @@ type Foo = { a: number };
 // using a style similar to a vue composable for the augments
 {
   console.log('Example 1');
-  const getAugmentedFoo = createCachedAugmenter((model: Foo) => {
+  const getAugmentedFoo = createCachedAugmenter((model: Reactive<Foo>) => {
     // Insert here code very similar to the code for a vue composable.
     //
     // (To see what a composable is, see
@@ -42,7 +42,7 @@ type Foo = { a: number };
     };
   });
 
-  const exampleFoo = reactive<Foo>({ a: 10 });
+  const exampleFoo: Foo = { a: 10 };
   const fooAugmented = getAugmentedFoo(exampleFoo);
   console.log('initialize watchEffect');
   watchEffect(() => {
@@ -67,7 +67,7 @@ type Foo = { a: number };
 // Using a class style for the augments. This is the harder way because of some gotchas.
 {
   console.log('Example 2');
-  const getAugmentedFoo = createCachedAugmenter((model: Foo) => {
+  const getAugmentedFoo = createCachedAugmenter((model: Reactive<Foo>) => {
     return new FooAugments(model);
   });
 
@@ -104,7 +104,7 @@ type Foo = { a: number };
 
   // It works the same as in Example 1.
 
-  const exampleFoo = reactive<Foo>({ a: 10 });
+  const exampleFoo: Foo = { a: 10 };
   const fooAugmented = getAugmentedFoo(exampleFoo);
   console.log('initialize watchEffect');
   watchEffect(() => {

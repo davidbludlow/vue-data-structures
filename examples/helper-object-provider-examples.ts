@@ -1,4 +1,4 @@
-import { computed, ref, watchEffect } from 'vue';
+import { computed, type Reactive, ref, watchEffect } from 'vue';
 import { createHelperObjectProvider } from '../src/helper-object-provider.ts';
 
 // This file shows examples of how to use `createHelperObjectProvider()`. The
@@ -6,12 +6,10 @@ import { createHelperObjectProvider } from '../src/helper-object-provider.ts';
 //
 // `deno --watch --allow-env=NODE_ENV examples/helper-object-provider-examples.ts`
 
-type Foo = {
-  a: number;
-};
+type Foo = { a: number };
 
 const fooHelperObjectProvider = createHelperObjectProvider(
-  (model: Foo) => {
+  (model: Reactive<Foo>) => {
     const nonReactive = {
       // This is a non-reactive property, but it is still publicly accessible.
       c: 1000,
@@ -54,7 +52,7 @@ async function wait() {
   console.log('');
 }
 
-const foo = { a: 10 };
+const foo: Foo = { a: 10 };
 const fooHelperObject = fooHelperObjectProvider(foo);
 
 console.log('initialize watchEffect');

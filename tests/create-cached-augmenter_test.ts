@@ -1,5 +1,5 @@
 import { createCachedAugmenter } from '../src/create-cached-augmenter.ts';
-import { computed, reactive, ref, watchEffect } from 'vue';
+import { computed, type Reactive, reactive, ref, watchEffect } from 'vue';
 import { assertEquals } from 'https://deno.land/std/testing/asserts.ts';
 
 type Foo = { a: number };
@@ -21,7 +21,7 @@ Deno.test('createCachedAugmenter should create augmented object with composition
     return { b, sum, incrementB, logState };
   });
 
-  const exampleFoo = reactive<Foo>({ a: 10 });
+  const exampleFoo = { a: 10 };
   const fooAugmented = getAugmentedFoo(exampleFoo);
 
   let log = '';
@@ -73,7 +73,7 @@ Deno.test('createCachedAugmenter should create augmented object using class styl
     }
   }
 
-  const exampleFoo = reactive<Foo>({ a: 10 });
+  const exampleFoo = { a: 10 };
   const fooAugmented = getAugmentedFoo(exampleFoo);
 
   let log = '';
@@ -99,14 +99,14 @@ Deno.test('createCachedAugmenter should create augmented object using class styl
 
 Deno.test('createCachedAugmenter should handle additionalParams', async () => {
   const getAugmentedFoo = createCachedAugmenter(
-    (model: Foo, additionalAddend: number) => {
+    (model: Reactive<Foo>, additionalAddend: number) => {
       const b = ref(10);
       const sum = computed(() => model.a + b.value + additionalAddend);
       return { b, sum };
     },
   );
 
-  const exampleFoo = reactive<Foo>({ a: 1 });
+  const exampleFoo = { a: 1 };
   const fooAugmented = getAugmentedFoo(exampleFoo, 100);
 
   assertEquals(fooAugmented.sum, 111);
