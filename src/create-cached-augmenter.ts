@@ -46,7 +46,18 @@ import { type Reactive, reactive } from 'vue';
  * augments object. Then `createCachedAugmenter` will call vue's `reactive()`,
  * on the augments object. That means that you will not have to type `.value` on
  * any of the properties on `fooAugmented`. (See
- * https://vuejs.org/api/reactivity-core.html#reactive for why that is.) */
+ * https://vuejs.org/api/reactivity-core.html#reactive for why that is.)
+ *
+ * This paragraph is only relevant if you have an `augmentFactory` with more
+ * than one parameter: If you make an `augmentFactory` that has an
+ * `additionalParams` then you must take care that you never call the function
+ * with a different `additionalParams` for a given `model` or you will suffer
+ * the wrath of many hours of hard debugging. I repeat, if you called the
+ * function with `exampleModel` and `exampleAdditionalParams` then you must
+ * never call it again with `exampleModel` and `example2additionalParams2`, or
+ * else you will just get the previously cached result that doesn't use
+ * `example2additionalParams2` at all. But you may use the same
+ * `additionalParams` for different `model`s. */
 export function createCachedAugmenter<
   ModelType extends object,
   AugmentsType extends object,

@@ -98,6 +98,10 @@ fooHelperObject.sum; // 120, no need to type `.value`
 
 You can find more examples in the `examples` directory.
 
+## Tips
+
+- If you are doing `createCachedAugmenter(augmentFactory)` and `augmentFactory` has more than one parameter, then you must read the last paragraph of the documentation for `createCachedAugmenter()` in the source code.
+
 ## TypeScript Trouble Shooting
 
 - If you are using Vue 2 you will need to rename `Reactive` to `UnwrapNestedRefs`.
