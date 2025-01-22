@@ -6,16 +6,15 @@ import { type Reactive, reactive } from 'vue';
 
 /** See
  * https://github.com/davidbludlow/vue-data-structures/blob/main/examples/create-cached-augmenter-examples.ts
- * for examples. This function creates a factory + cache function for augmented
- * objects. This lets you wrap an object with a vue-reactive proxy that gives it
- * superpowers such as computed values, methods, and other additional properties
- * you specify as augments.
+ * for examples. This function creates a cache-backed factory function for
+ * augmented objects. This lets you wrap your `model` object with a vue-reactive
+ * proxy that gives it superpowers such as computed values, methods, and other
+ * additional properties you specify as augments.
  *
  * Imagine `model` is some deserialized object. You will want to serialize it
  * again later, but you don't want to have to write a serialization function
- * beyond `JSON.serialize(model)`, so just just keep `model` intact for
- * serialization later and wrap it with augments to help you use it
- * conveniently.
+ * beyond `JSON.serialize(model)`, so just keep `model` intact for serialization
+ * later and wrap it with augments to help you use it conveniently.
  *
  * Name the returned value from this function something like `getAugmentedFoo`
  * (obviously replacing "Foo" with something else). `getAugmentedFoo` will
