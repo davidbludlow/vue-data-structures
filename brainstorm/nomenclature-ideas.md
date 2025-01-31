@@ -9,3 +9,7 @@ use StudentWork objects as an example type of model for this doc
     - studentWorkViewModelProvider.get(model)
 - const getStudentWorkHelperObject = createStudentWorkHelperObjectProvider(factoryFunction);
   - const studentWorkHelperObject = getStudentWorkHelperObject(model);
+- const getStudentWorkWrapper = createWrapperCache(enhancementFactory); // or enhancementComposable or additionsFactory or additionalPropertiesFactory or extraPropertiesFactory or extrasFactory or extrasComposable or composable or extensionsComposable or extensionsFactory or wrapperEnhancementFactory or enhancementComposableFunction or wrapperExtrasComposable or wrapperExtrasFactory or wrapperExtensionsComposable or wrapperExtensionsFactory
+  - const studentWorkWrapper = getStudentWorkWrapper(model);
+const getStudentWorkModelWrapper = createModelWrapperCache(wrapperExtrasFactory);
+  - const studentWorkModelWrapper = getStudentWorkModelWrapper(model);
