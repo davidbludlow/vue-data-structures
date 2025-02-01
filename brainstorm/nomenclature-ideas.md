@@ -11,5 +11,5 @@ use StudentWork objects as an example type of model for this doc
   - const studentWorkHelperObject = getStudentWorkHelperObject(model);
 - const getStudentWorkWrapper = createWrapperCache(enhancementFactory); // or enhancementComposable or additionsFactory or additionalPropertiesFactory or extraPropertiesFactory or extrasFactory or extrasComposable or composable or extensionsComposable or extensionsFactory or wrapperEnhancementFactory or enhancementComposableFunction or wrapperExtrasComposable or wrapperExtrasFactory or wrapperExtensionsComposable or wrapperExtensionsFactory
   - const studentWorkWrapper = getStudentWorkWrapper(model);
-const getStudentWorkModelWrapper = createModelWrapperCache(wrapperExtrasComposable);
+- const getStudentWorkModelWrapper = createModelWrapperCache(wrapperExtrasComposable);
   - const studentWorkModelWrapper = getStudentWorkModelWrapper(model);
