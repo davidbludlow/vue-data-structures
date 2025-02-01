@@ -1,5 +1,5 @@
-import { computed, type Reactive, ref, watchEffect } from 'vue';
 import { assertEquals } from 'https://deno.land/std@0.106.0/testing/asserts.ts';
+import { computed, type Reactive, ref, watchEffect } from 'vue';
 import { createHelperObjectProvider } from '../src/helper-object-provider.ts';
 
 type Foo = { a: number };

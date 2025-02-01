@@ -1,6 +1,7 @@
 {
   "typescript": {
     "deno": true,
+    "module.sortImportDeclarations": "caseInsensitive",
     "quoteStyle": "preferSingle",
   },
   "json": {

@@ -15,8 +15,8 @@ This function creates a factory + cache function for augmented objects. It allow
 #### Example
 
 ```typescript
-import { createCachedAugmenter } from './src/create-cached-augmenter.ts';
 import { computed, ref } from 'vue';
+import { createCachedAugmenter } from './src/create-cached-augmenter.ts';
 
 type Foo = { a: number };
 
@@ -59,8 +59,8 @@ This function creates a helper object provider that returns a helper object for 
 #### Example
 
 ```typescript
-import { createHelperObjectProvider } from './src/helper-object-provider.ts';
 import { computed, ref } from 'vue';
+import { createHelperObjectProvider } from './src/helper-object-provider.ts';
 
 type Foo = { a: number };
 

@@ -1,5 +1,5 @@
-import { computed, reactive, ref, watchEffect } from 'vue';
 import { assertEquals } from 'https://deno.land/std/testing/asserts.ts';
+import { computed, reactive, ref, watchEffect } from 'vue';
 import { type Reactive } from 'vue';
 
 /** **** This idea was rejected because: ****
