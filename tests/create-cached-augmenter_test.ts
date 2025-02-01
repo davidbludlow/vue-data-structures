@@ -115,3 +115,32 @@ Deno.test('createCachedAugmenter should handle additionalParams', async () => {
   fooAugmented.b--;
   assertEquals(fooAugmented.sum, 111);
 });
+
+Deno.test('createCachedAugmenter should support iteration and JSON serialization', async () => {
+  const getAugmentedFoo = createCachedAugmenter((model: Foo) => {
+    const b = ref(100);
+    const sum = computed(() => model.a + b.value);
+    function incrementB() {
+      b.value++;
+    }
+    function logState() {
+      return `a: ${model.a}, b: ${b.value}, sum: ${sum.value}`;
+    }
+    return { b, sum, incrementB, logState };
+  });
+
+  const exampleFoo = { a: 10 };
+  const fooAugmented = getAugmentedFoo(exampleFoo);
+
+  // Test iterator
+  const properties: string[] = [];
+  for (const key in fooAugmented) {
+    properties.push(key);
+  }
+  assertEquals(properties, ['a']);
+
+  // Test JSON serialization
+  const jsonString = JSON.stringify(fooAugmented);
+  const parsedObject = JSON.parse(jsonString);
+  assertEquals(parsedObject, { a: 10 });
+});
