@@ -8,7 +8,7 @@ Currently, this project is not packaged. You can copy the desired files into you
 
 ## Usage
 
-### create-cached-augmenter
+### createCachedAugmenter()
 
 This function creates a factory + cache function for augmented objects. It allows you to wrap an object with a Vue-reactive proxy that provides additional properties and methods. Those additional properties and helper methods are the "augments".
 
@@ -21,7 +21,7 @@ import { createCachedAugmenter } from './src/create-cached-augmenter.ts';
 type Foo = { a: number };
 
 const getAugmentedFoo = createCachedAugmenter((model: Foo) => {
-  // code like a vue composable
+  // code like a Vue composable
 
   const b = ref(100);
   const sum = computed(() => model.a + b.value);
@@ -52,7 +52,7 @@ fooAugmented.logState(); // "a: 20, b: 100, sum: 120"
 fooAugmented.sum; // 120, no need to type `.value`
 ```
 
-### helper-object-provider
+### helperObjectProvider()
 
 This function creates a helper object provider that returns a helper object for a given model. If a helper object has already been created for that model, it returns the cached helper object.
 
@@ -65,7 +65,7 @@ import { createHelperObjectProvider } from './src/helper-object-provider.ts';
 type Foo = { a: number };
 
 const fooHelperObjectProvider = createHelperObjectProvider((model: Foo) => {
-  // code like a vue composable
+  // code like a Vue composable
 
   const b = ref(100);
   const sum = computed(() => model.a + b.value);

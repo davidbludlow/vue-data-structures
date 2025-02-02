@@ -5,8 +5,8 @@
 import { type Reactive, reactive } from 'vue';
 
 /** See
- * https://github.com/davidbludlow/vue-data-structures/blob/main/examples/create-cached-augmenter-examples.ts
- * for examples. This function creates a cache-backed factory function for
+ * https://github.com/davidbludlow/vue-data-structures/#createCachedAugmenter
+ * for an example. This function creates a cache-backed factory function for
  * augmented objects. This lets you wrap your `model` object with a vue-reactive
  * proxy that gives it superpowers such as computed values, methods, and other
  * additional properties you specify as augments.

@@ -12,8 +12,8 @@ import { type Reactive, reactive } from 'vue';
  * objects.
  *
  * See
- * https://github.com/davidbludlow/vue-data-structures/blob/main/examples/helper-object-provider-examples.ts
- * for examples. */
+ * https://github.com/davidbludlow/vue-data-structures/#helperObjectProvider
+ * for more information. */
 export function createHelperObjectProvider<
   TModel extends object,
   THelper extends object,
