@@ -24,15 +24,14 @@ import { useCachedWrappers } from './use-cached-wrappers.ts';
  *
  * I recommend calling the reactive proxy objects returned by `getFooWrapper`
  * something like `fooWrapper` (obviously replacing "foo"). `fooWrapper` will
- * have all the properties of `data` and all the properties of the of the object
+ * have all the properties of `data` and all the properties of the object
  * returned from `wrapperDefinition`. `fooWrapper` will be reactive, so you can
  * use it in Vue's reactivity system.
  *
  * `wrapperDefinition` is a function for defining additional properties such as
  * computed properties, getters, setters, methods, and refs containing extra
- * state that you don't want serialized. `wrapperDefinition` can instantiate a
- * custom class you make or, more likely, contain code that looks just like the
- * code for a vue composable
+ * state that you don't want serialized. `wrapperDefinition` can contain code
+ * that looks just like the code for a Vue composable
  * (https://vuejs.org/guide/reusability/composables.html). Every property on the
  * object returned from `wrapperDefinition` will be available on the data
  * wrapper. If the object returned from `wrapperDefinition` has a property that
@@ -50,15 +49,13 @@ import { useCachedWrappers } from './use-cached-wrappers.ts';
  * https://vuejs.org/api/reactivity-core.html#reactive for why that is.)
  *
  * This paragraph is only relevant if you have an `wrapperDefinition` with more
- * than one parameter: If you make an `wrapperDefinition` that has an
- * `additionalParams` then you must take care that you never call the function
- * with a different `additionalParams` for a given `data` or you will suffer the
- * wrath of many hours of hard debugging. I repeat, if you called the function
- * with `exampleData` and `exampleAdditionalParams` then you must never call it
- * again with `exampleData` and `example2additionalParams2`, or else you will
- * just get the previously cached result that doesn't use
- * `example2additionalParams2` at all. But you may use the same
- * `additionalParams` for different `data`s. */
+ * than one parameter: If `wrapperDefinition` has more than one parameter,
+ * ensure you always call the function with the same `additionalParams` for a
+ * given `data` object. Calling it with different `additionalParams` for the
+ * same `data` will result in using the previously cached result, which can lead
+ * to hard-to-debug issues. However, you may use the same `additionalParams` for
+ * different `data` objects.
+ */
 export function useCachedAugmentingWrappers<
   TData extends UnwrapNestedRefs<object>,
   TAugmentedProperties extends object,
