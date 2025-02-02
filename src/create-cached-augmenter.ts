@@ -2,7 +2,8 @@
 // https://github.com/davidbludlow/vue-data-structures/blob/main/src/create-cached-augmenter.ts
 // which had an MIT license, when it was copied.
 
-import { type Reactive, reactive } from 'vue';
+import { type Reactive, reactive, type UnwrapNestedRefs } from 'vue';
+import { createHelperObjectProvider } from './helper-object-provider.ts';
 
 /** See
  * https://github.com/davidbludlow/vue-data-structures/#createCachedAugmenter
@@ -58,33 +59,47 @@ import { type Reactive, reactive } from 'vue';
  * `example2additionalParams2` at all. But you may use the same
  * `additionalParams` for different `model`s. */
 export function createCachedAugmenter<
-  ModelType extends object,
+  ModelType extends UnwrapNestedRefs<object>,
+  AugmentsType extends object,
+>(
+  augmentFactory: (
+    model: ModelType,
+  ) => AugmentsType,
+): (
+  model: ModelType,
+) => Reactive<AugmentsType> & Omit<ModelType, keyof AugmentsType> {
+  return createHelperObjectProvider(
+    createAugmentingWrapperFactory<ModelType, AugmentsType, []>(
+      augmentFactory,
+    ),
+  ) as (
+    model: ModelType,
+  ) => Reactive<AugmentsType> & Omit<ModelType, keyof AugmentsType>;
+}
+
+export function createAugmentingWrapperFactory<
+  ModelType extends UnwrapNestedRefs<object>,
   AugmentsType extends object,
   AdditionalParamsType extends any[],
 >(
-  augmentFactory: (
-    model: Reactive<ModelType>,
+  wrapperComposable: (
+    model: ModelType,
     ...additionalParams: AdditionalParamsType
   ) => AugmentsType,
 ): (
-  model: ModelType | Reactive<ModelType>,
+  model: ModelType,
   ...additionalParams: AdditionalParamsType
-) => Reactive<AugmentsType & Omit<ModelType, keyof AugmentsType>> {
-  type AugmentedModelType = Reactive<
-    AugmentsType & Omit<ModelType, keyof AugmentsType>
-  >;
-  // Do not worry about the performance of `WeakMap`. Vue already uses `WeakMap`
-  // extremely frequently (like every time you use a reactive object).
-  const cache = new WeakMap<Reactive<ModelType>, AugmentedModelType>();
+) => Reactive<AugmentsType> & Omit<ModelType, keyof AugmentsType> {
+  type AugmentedModelType =
+    & Reactive<AugmentsType>
+    & Omit<ModelType, keyof AugmentsType>;
   return (model, ...additionalParams) => {
     /** `reactiveModel === model` will be true if `model` was already reactive.
      * (Vue 3 internally uses `WeakMap` to cache reactive `Proxy`s to make that
      * possible.) */
     const reactiveModel = reactive(model) as Reactive<ModelType>;
-    const cached = cache.get(reactiveModel);
-    if (cached) return cached;
-    const augments = augmentFactory(
-      reactiveModel,
+    const augments = wrapperComposable(
+      reactiveModel as ModelType,
       ...additionalParams,
     ) as AugmentsType;
     // The `reactive()` is to unwrap any vue `Ref`s, so that `.value` is not
@@ -112,7 +127,6 @@ export function createCachedAugmenter<
         return property in augments || Reflect.has(target, property);
       },
     }) as unknown as AugmentedModelType;
-    cache.set(reactiveModel, proxy);
     return proxy;
   };
 }

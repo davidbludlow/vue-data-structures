@@ -30,10 +30,13 @@ export function createHelperObjectProvider<
     const reactiveModel = reactive(model) as TModel;
     const cached = cache.get(reactiveModel);
     if (cached) return cached;
+    const factoryOutput = factory(reactiveModel);
     // Calling `reactive()` on it will make it so you do not need to call
     // `.value` on the refs and computed. (See
     // https://vuejs.org/api/reactivity-core.html#reactive for proof of that.)
-    const helper = reactive(factory(reactiveModel));
+    // BTW, `helper === factoryOutput` will already be true if you used
+    // `createAugmentingWrapperFactory()` to create `factory`.
+    const helper = reactive(factoryOutput);
     cache.set(reactiveModel, helper);
     return helper;
   };

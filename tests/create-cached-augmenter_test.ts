@@ -1,6 +1,9 @@
 import { assertEquals } from 'https://deno.land/std/testing/asserts.ts';
 import { computed, reactive, ref, watchEffect } from 'vue';
-import { createCachedAugmenter } from '../src/create-cached-augmenter.ts';
+import {
+  createAugmentingWrapperFactory,
+  createCachedAugmenter,
+} from '../src/create-cached-augmenter.ts';
 
 type Foo = { a: number };
 
@@ -97,23 +100,39 @@ Deno.test('createCachedAugmenter should create augmented object using class styl
   assertEquals(log, 'a: 11, b: 100, sum: 111');
 });
 
-Deno.test('createCachedAugmenter should handle additionalParams', async () => {
-  const getAugmentedFoo = createCachedAugmenter(
-    (model: Foo, additionalAddend: number) => {
-      const b = ref(10);
-      const sum = computed(() => model.a + b.value + additionalAddend);
-      return { b, sum };
+// Deno.test('createCachedAugmenter should handle additionalParams', async () => {
+//   const getAugmentedFoo = createCachedAugmenter(
+//     (model: Foo, additionalAddend: number) => {
+//       const b = ref(10);
+//       const sum = computed(() => model.a + b.value + additionalAddend);
+//       return { b, sum };
+//     },
+//   );
+
+//   const exampleFoo = { a: 1 };
+//   const fooAugmented = getAugmentedFoo(exampleFoo, 100);
+
+//   assertEquals(fooAugmented.sum, 111);
+//   fooAugmented.a++;
+//   assertEquals(fooAugmented.sum, 112);
+//   fooAugmented.b--;
+//   assertEquals(fooAugmented.sum, 111);
+// });
+
+Deno.test('createAugmentingWrapperFactory makes a factory that makes objects that `reactive()` would detect as already being reactive', async () => {
+  const getAugmentedFoo = createAugmentingWrapperFactory(
+    (model: Reactive<Foo>) => {
+      const b = ref(100);
+      return { b };
     },
   );
-
-  const exampleFoo = { a: 1 };
-  const fooAugmented = getAugmentedFoo(exampleFoo, 100);
-
-  assertEquals(fooAugmented.sum, 111);
-  fooAugmented.a++;
-  assertEquals(fooAugmented.sum, 112);
-  fooAugmented.b--;
-  assertEquals(fooAugmented.sum, 111);
+  const fooAugmented = getAugmentedFoo({ a: 10 });
+  const reactiveFooAugmented = reactive(fooAugmented);
+  // Note that `reactiveFooAugmented` is not actually the type of reactive
+  // `Proxy` that `reactive()` usually returns. But `reactive()` will naturally
+  // be fooled into thinking it is, so `reactive()` will return the input object
+  // unchanged. Don't worry. The object will still act reactively.
+  assertEquals(reactiveFooAugmented, fooAugmented);
 });
 
 Deno.test('createCachedAugmenter should support iteration and JSON serialization', async () => {
