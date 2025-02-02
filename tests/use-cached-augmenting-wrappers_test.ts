@@ -1,9 +1,9 @@
 import { assertEquals } from 'https://deno.land/std/testing/asserts.ts';
 import { computed, reactive, ref, watchEffect } from 'vue';
 import {
-  createAugmentingWrapperFactory,
-  createCachedAugmenter,
-} from '../src/create-cached-augmenter.ts';
+  useAugmentingWrapperFactory,
+  useCachedAugmentingWrappers,
+} from '../src/use-cached-augmenting-wrappers.ts';
 
 type Foo = { a: number };
 
@@ -11,59 +11,59 @@ function wait() {
   return new Promise((resolve) => setTimeout(resolve));
 }
 
-Deno.test('createCachedAugmenter should create augmented object with composition style', async () => {
-  const getAugmentedFoo = createCachedAugmenter((model: Foo) => {
+Deno.test('useCachedAugmentingWrappers should create data wrapper with composition style', async () => {
+  const getFooWrapper = useCachedAugmentingWrappers((foo: Foo) => {
     const b = ref(100);
-    const sum = computed(() => model.a + b.value);
+    const sum = computed(() => foo.a + b.value);
     function incrementB() {
       b.value++;
     }
     function logState() {
-      return `a: ${model.a}, b: ${b.value}, sum: ${sum.value}`;
+      return `a: ${foo.a}, b: ${b.value}, sum: ${sum.value}`;
     }
     return { b, sum, incrementB, logState };
   });
 
   const exampleFoo = { a: 10 };
-  const fooAugmented = getAugmentedFoo(exampleFoo);
+  const fooWrapper = getFooWrapper(exampleFoo);
 
   let log = '';
   watchEffect(() => {
-    log = fooAugmented.logState();
+    log = fooWrapper.logState();
   });
 
   await wait();
   assertEquals(log, 'a: 10, b: 100, sum: 110');
 
-  fooAugmented.a++;
+  fooWrapper.a++;
   await wait();
   assertEquals(log, 'a: 11, b: 100, sum: 111');
 
-  fooAugmented.b--;
+  fooWrapper.b--;
   await wait();
   assertEquals(log, 'a: 11, b: 99, sum: 110');
 
-  fooAugmented.incrementB();
+  fooWrapper.incrementB();
   await wait();
   assertEquals(log, 'a: 11, b: 100, sum: 111');
 });
 
-Deno.test('createCachedAugmenter should create augmented object using class style', async () => {
-  const getAugmentedFoo = createCachedAugmenter((model: Foo) => {
-    return new FooAugments(model);
+Deno.test('useCachedAugmentingWrappers should create data wrapper using class style', async () => {
+  const getFooWrapper = useCachedAugmentingWrappers((foo: Foo) => {
+    return new FooAugments(foo);
   });
 
   class FooAugments {
     b = 100;
     readonly sum: number;
 
-    constructor(private model: Foo) {
+    constructor(private foo: Foo) {
       const reactiveThis = reactive(this);
       // COMPUTED NOT RECOMMENDED IN CLASS STYLE because this is too awkward.
       this.sum = computed(() => {
-        // model will already be reactive, but `this` will not be, when the
+        // foo will already be reactive, but `this` will not be, when the
         // constructor is running.
-        return model.a + reactiveThis.b;
+        return foo.a + reactiveThis.b;
       }) as unknown as number;
     }
 
@@ -72,94 +72,94 @@ Deno.test('createCachedAugmenter should create augmented object using class styl
     }
 
     logState() {
-      return `a: ${this.model.a}, b: ${this.b}, sum: ${this.sum}`;
+      return `a: ${this.foo.a}, b: ${this.b}, sum: ${this.sum}`;
     }
   }
 
   const exampleFoo = { a: 10 };
-  const fooAugmented = getAugmentedFoo(exampleFoo);
+  const fooWrapper = getFooWrapper(exampleFoo);
 
   let log = '';
   watchEffect(() => {
-    log = fooAugmented.logState();
+    log = fooWrapper.logState();
   });
 
   await wait();
   assertEquals(log, 'a: 10, b: 100, sum: 110');
 
-  fooAugmented.a++;
+  fooWrapper.a++;
   await wait();
   assertEquals(log, 'a: 11, b: 100, sum: 111');
 
-  fooAugmented.b--;
+  fooWrapper.b--;
   await wait();
   assertEquals(log, 'a: 11, b: 99, sum: 110');
 
-  fooAugmented.incrementB();
+  fooWrapper.incrementB();
   await wait();
   assertEquals(log, 'a: 11, b: 100, sum: 111');
 });
 
-// Deno.test('createCachedAugmenter should handle additionalParams', async () => {
-//   const getAugmentedFoo = createCachedAugmenter(
-//     (model: Foo, additionalAddend: number) => {
+// Deno.test('useCachedAugmentingWrappers should handle additionalParams', async () => {
+//   const getFooWrapper = useCachedAugmentingWrappers(
+//     (foo: Foo, additionalAddend: number) => {
 //       const b = ref(10);
-//       const sum = computed(() => model.a + b.value + additionalAddend);
+//       const sum = computed(() => foo.a + b.value + additionalAddend);
 //       return { b, sum };
 //     },
 //   );
 
 //   const exampleFoo = { a: 1 };
-//   const fooAugmented = getAugmentedFoo(exampleFoo, 100);
+//   const fooWrapper = getFooWrapper(exampleFoo, 100);
 
-//   assertEquals(fooAugmented.sum, 111);
-//   fooAugmented.a++;
-//   assertEquals(fooAugmented.sum, 112);
-//   fooAugmented.b--;
-//   assertEquals(fooAugmented.sum, 111);
+//   assertEquals(fooWrapper.sum, 111);
+//   fooWrapper.a++;
+//   assertEquals(fooWrapper.sum, 112);
+//   fooWrapper.b--;
+//   assertEquals(fooWrapper.sum, 111);
 // });
 
-Deno.test('createAugmentingWrapperFactory makes a factory that makes objects that `reactive()` would detect as already being reactive', async () => {
-  const getAugmentedFoo = createAugmentingWrapperFactory(
-    (model: Reactive<Foo>) => {
+Deno.test('useAugmentingWrapperFactory makes a factory that makes objects that `reactive()` would detect as already being reactive', async () => {
+  const getFooWrapper = useAugmentingWrapperFactory(
+    (foo: Foo) => {
       const b = ref(100);
       return { b };
     },
   );
-  const fooAugmented = getAugmentedFoo({ a: 10 });
-  const reactiveFooAugmented = reactive(fooAugmented);
-  // Note that `reactiveFooAugmented` is not actually the type of reactive
+  const fooWrapper = getFooWrapper({ a: 10 });
+  const reactiveFooWrapper = reactive(fooWrapper);
+  // Note that `reactiveFooWrapper` is not actually the type of reactive
   // `Proxy` that `reactive()` usually returns. But `reactive()` will naturally
   // be fooled into thinking it is, so `reactive()` will return the input object
   // unchanged. Don't worry. The object will still act reactively.
-  assertEquals(reactiveFooAugmented, fooAugmented);
+  assertEquals(reactiveFooWrapper, fooWrapper);
 });
 
-Deno.test('createCachedAugmenter should support iteration and JSON serialization', async () => {
-  const getAugmentedFoo = createCachedAugmenter((model: Foo) => {
+Deno.test('useCachedAugmentingWrappers should support iteration and JSON serialization', async () => {
+  const getFooWrapper = useCachedAugmentingWrappers((foo: Foo) => {
     const b = ref(100);
-    const sum = computed(() => model.a + b.value);
+    const sum = computed(() => foo.a + b.value);
     function incrementB() {
       b.value++;
     }
     function logState() {
-      return `a: ${model.a}, b: ${b.value}, sum: ${sum.value}`;
+      return `a: ${foo.a}, b: ${b.value}, sum: ${sum.value}`;
     }
     return { b, sum, incrementB, logState };
   });
 
   const exampleFoo = { a: 10 };
-  const fooAugmented = getAugmentedFoo(exampleFoo);
+  const fooWrapper = getFooWrapper(exampleFoo);
 
   // Test iterator
   const properties: string[] = [];
-  for (const key in fooAugmented) {
+  for (const key in fooWrapper) {
     properties.push(key);
   }
   assertEquals(properties, ['a']);
 
   // Test JSON serialization
-  const jsonString = JSON.stringify(fooAugmented);
+  const jsonString = JSON.stringify(fooWrapper);
   const parsedObject = JSON.parse(jsonString);
   assertEquals(parsedObject, { a: 10 });
 });

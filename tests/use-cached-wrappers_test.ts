@@ -1,11 +1,11 @@
 import { assertEquals } from 'https://deno.land/std@0.106.0/testing/asserts.ts';
 import { computed, ref, watchEffect } from 'vue';
-import { createHelperObjectProvider } from '../src/helper-object-provider.ts';
+import { useCachedWrappers } from '../src/use-cached-wrappers.ts';
 
 type Foo = { a: number };
 
-const fooHelperObjectProvider = createHelperObjectProvider(
-  (model: Foo) => {
+const getFooWrapper = useCachedWrappers(
+  (foo: Foo) => {
     const nonReactive = {
       c: 1000,
     };
@@ -13,7 +13,7 @@ const fooHelperObjectProvider = createHelperObjectProvider(
     const b = ref(100);
 
     const sum = computed(() => {
-      return model.a + b.value + nonReactive.c;
+      return foo.a + b.value + nonReactive.c;
     });
 
     function incrementB() {
@@ -21,14 +21,14 @@ const fooHelperObjectProvider = createHelperObjectProvider(
     }
 
     function logState() {
-      return `a: ${model.a}, b: ${b.value}, c: ${nonReactive.c}, sum: ${sum.value}`;
+      return `a: ${foo.a}, b: ${b.value}, c: ${nonReactive.c}, sum: ${sum.value}`;
     }
 
     return {
       get nonReactive() {
         return nonReactive;
       },
-      model,
+      foo,
       b,
       sum,
       incrementB,
@@ -41,33 +41,33 @@ async function wait() {
   await new Promise((resolve) => setTimeout(resolve));
 }
 
-Deno.test('helper-object-provider test', async () => {
+Deno.test('useCachedWrappers test', async () => {
   const foo = { a: 10 };
-  const fooHelperObject = fooHelperObjectProvider(foo);
+  const fooWrapper = getFooWrapper(foo);
 
   let watchEffectCount = 0;
   watchEffect(() => {
     watchEffectCount++;
-    fooHelperObject.logState();
+    fooWrapper.logState();
   });
   await wait();
   assertEquals(watchEffectCount, 1);
 
-  fooHelperObject.incrementB();
+  fooWrapper.incrementB();
   await wait();
-  assertEquals(fooHelperObject.b, 101);
-  assertEquals(fooHelperObject.sum, 1111);
+  assertEquals(fooWrapper.b, 101);
+  assertEquals(fooWrapper.sum, 1111);
   assertEquals(watchEffectCount, 2);
 
-  fooHelperObject.nonReactive.c++;
+  fooWrapper.nonReactive.c++;
   await wait();
-  assertEquals(fooHelperObject.nonReactive.c, 1001);
-  assertEquals(fooHelperObject.sum, 1111); // sum should not change
+  assertEquals(fooWrapper.nonReactive.c, 1001);
+  assertEquals(fooWrapper.sum, 1111); // sum should not change
   assertEquals(watchEffectCount, 2);
 
-  fooHelperObject.model.a++;
+  fooWrapper.foo.a++;
   await wait();
-  assertEquals(fooHelperObject.model.a, 11);
-  assertEquals(fooHelperObject.sum, 1113);
+  assertEquals(fooWrapper.foo.a, 11);
+  assertEquals(fooWrapper.sum, 1113);
   assertEquals(watchEffectCount, 3);
 });

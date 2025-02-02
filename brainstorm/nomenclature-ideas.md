@@ -13,3 +13,5 @@ use StudentWork objects as an example type of model for this doc
   - const studentWorkWrapper = getStudentWorkWrapper(model);
 - const getStudentWorkModelWrapper = createModelWrapperCache(wrapperExtrasComposable);
   - const studentWorkModelWrapper = getStudentWorkModelWrapper(model);
+- const getStudentWorkWrapper = useCachedWrappers(wrapperFactory);
+- const getStudentWorkWrapper = useCachedAugmentingWrappers(wrapperFactory);

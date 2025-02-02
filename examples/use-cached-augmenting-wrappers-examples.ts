@@ -1,17 +1,17 @@
 import { computed, type Reactive, reactive, ref, watchEffect } from 'vue';
-import { createCachedAugmenter } from '../src/create-cached-augmenter.ts';
+import { useCachedAugmentingWrappers } from '../src/use-cached-augmenting-wrappers.ts';
 
-// This file shows examples of how to use `createCachedAugmenter()`. The easiest
-// way to run this file is by running `npm i` then running
+// This file shows examples of how to use `useCachedAugmentingWrappers()`. The
+// easiest way to run this file is by running `npm i` then running
 //
-// `deno --watch --allow-env=NODE_ENV examples/create-cached-augmenter-examples.ts`
+// `deno --watch --allow-env=NODE_ENV examples/use-cached-augmenting-wrappers-examples.ts`
 
 type Foo = { a: number };
 // -------------------------------- Example 1 --------------------------------
-// using a style similar to a vue composable for the augments
+// using a style similar to a vue composable for the data wrappers
 {
   console.log('Example 1');
-  const getAugmentedFoo = createCachedAugmenter((model: Foo) => {
+  const getFooWrapper = useCachedAugmentingWrappers((foo: Foo) => {
     // Insert here code very similar to the code for a vue composable.
     //
     // (To see what a composable is, see
@@ -23,7 +23,7 @@ type Foo = { a: number };
 
     const sum = computed(() => {
       console.log('`sum` computed was triggered');
-      return model.a + b.value;
+      return foo.a + b.value;
     });
 
     function incrementB() {
@@ -31,7 +31,7 @@ type Foo = { a: number };
     }
 
     function logState() {
-      return `a: ${model.a}, b: ${b.value}, sum: ${sum.value}`;
+      return `a: ${foo.a}, b: ${b.value}, sum: ${sum.value}`;
     }
 
     return {
@@ -43,48 +43,48 @@ type Foo = { a: number };
   });
 
   const exampleFoo: Foo = { a: 10 };
-  const fooAugmented = getAugmentedFoo(exampleFoo);
+  const fooWrapper = getFooWrapper(exampleFoo);
   console.log('initialize watchEffect');
   watchEffect(() => {
-    console.log('watchEffect was triggered:', fooAugmented.logState());
+    console.log('watchEffect was triggered:', fooWrapper.logState());
   });
   await wait();
 
   console.log('incrementing a');
-  fooAugmented.a++;
+  fooWrapper.a++;
   await wait(); // watchEffect fires
 
   console.log('decrementing b');
-  fooAugmented.b--;
+  fooWrapper.b--;
   await wait(); // watchEffect fires
 
   console.log('incrementing b');
-  fooAugmented.incrementB();
+  fooWrapper.incrementB();
   await wait(); // watchEffect fires
 }
 
 // -------------------------------- Example 2 (harder way) --------------------------------
-// Using a class style for the augments. This is the harder way because of some gotchas.
+// Using a class style for the data wrappers. This is the harder way because of some gotchas.
 {
   console.log('Example 2');
-  const getAugmentedFoo = createCachedAugmenter((model: Foo) => {
-    return new FooAugments(model);
+  const getFooWrapper = useCachedAugmentingWrappers((foo: Foo) => {
+    return new FooAugments(foo);
   });
 
   class FooAugments {
     // `b` will be reactive because every instantiation of `FooAugments` will be
-    // wrapped in a `reactive()` proxy by `createCachedAugmenter`.
+    // wrapped in a `reactive()` proxy by `useCachedAugmentingWrappers`.
     b = 100;
     readonly sum: number;
 
-    constructor(private model: Foo) {
+    constructor(private foo: Foo) {
       const reactiveThis = reactive(this);
       // COMPUTED NOT RECOMMENDED IN CLASS STYLE because this is too awkward.
       this.sum = computed(() => {
         console.log('`sum` computed was triggered');
-        // `model` will already be reactive, but `this` will not be, when the
+        // `foo` will already be reactive, but `this` will not be, when the
         // constructor is running.
-        return model.a + reactiveThis.b;
+        return foo.a + reactiveThis.b;
         // The casting below looks like a lie, but it will be accurate in
         // practice because every instantiation of `FooAugments` will be wrapped
         // in a `reactive()` proxy, so all the `.value`s will be automatically
@@ -98,30 +98,30 @@ type Foo = { a: number };
     }
 
     logState() {
-      return `a: ${this.model.a}, b: ${this.b}, sum: ${this.sum}`;
+      return `a: ${this.foo.a}, b: ${this.b}, sum: ${this.sum}`;
     }
   }
 
   // It works the same as in Example 1.
 
   const exampleFoo: Foo = { a: 10 };
-  const fooAugmented = getAugmentedFoo(exampleFoo);
+  const fooWrapper = getFooWrapper(exampleFoo);
   console.log('initialize watchEffect');
   watchEffect(() => {
-    console.log('watchEffect was triggered:', fooAugmented.logState());
+    console.log('watchEffect was triggered:', fooWrapper.logState());
   });
   await wait();
 
   console.log('incrementing a');
-  fooAugmented.a++;
+  fooWrapper.a++;
   await wait(); // watchEffect fires
 
   console.log('decrementing b');
-  fooAugmented.b--;
+  fooWrapper.b--;
   await wait(); // watchEffect fires
 
   console.log('incrementing b');
-  fooAugmented.incrementB();
+  fooWrapper.incrementB();
   await wait(); // watchEffect fires
 }
 

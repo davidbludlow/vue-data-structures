@@ -1,6 +1,6 @@
 {
   "tasks": {
-    "dev": "deno --watch --allow-env=NODE_ENV create-cached-augmenter-examples.ts",
+    "dev": "deno --watch --allow-env=NODE_ENV use-cached-augmenting-wrappers-examples.ts",
     "fmt": "dprint fmt",
     // Run `deno test` to run tests
   },
