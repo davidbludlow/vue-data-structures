@@ -67,7 +67,7 @@ export function createCachedAugmenter<
     ...additionalParams: AdditionalParamsType
   ) => AugmentsType,
 ): (
-  model: ModelType,
+  model: ModelType | Reactive<ModelType>,
   ...additionalParams: AdditionalParamsType
 ) => Reactive<AugmentsType & Omit<ModelType, keyof AugmentsType>> {
   type AugmentedModelType = Reactive<
@@ -80,7 +80,7 @@ export function createCachedAugmenter<
     /** `reactiveModel === model` will be true if `model` was already reactive.
      * (Vue 3 internally uses `WeakMap` to cache reactive `Proxy`s to make that
      * possible.) */
-    const reactiveModel = reactive(model);
+    const reactiveModel = reactive(model) as Reactive<ModelType>;
     const cached = cache.get(reactiveModel);
     if (cached) return cached;
     const augments = augmentFactory(

@@ -19,18 +19,15 @@ export function createHelperObjectProvider<
   THelper extends object,
 >(
   factory: (model: Reactive<TModel>) => THelper,
-): (model: TModel) => Reactive<THelper> {
+): (model: TModel | Reactive<TModel>) => Reactive<THelper> {
   // Do not worry about the performance of `WeakMap`. Vue already uses `WeakMap`
   // extremely frequently (like every time you use a reactive object).
-  const cache = new WeakMap<
-    Reactive<TModel>,
-    Reactive<THelper>
-  >();
-  return (model: TModel): Reactive<THelper> => {
+  const cache = new WeakMap<Reactive<TModel>, Reactive<THelper>>();
+  return (model: TModel | Reactive<TModel>): Reactive<THelper> => {
     /** `reactiveModel === model` will be true if `model` was already reactive.
      * (Vue 3 internally uses `WeakMap` to cache reactive `Proxy`s to make that
      * possible.) */
-    const reactiveModel = reactive(model);
+    const reactiveModel = reactive(model) as Reactive<TModel>;
     const cached = cache.get(reactiveModel);
     if (cached) return cached;
     // Calling `reactive()` on it will make it so you do not need to call
