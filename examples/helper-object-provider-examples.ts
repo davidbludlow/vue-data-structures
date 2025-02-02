@@ -9,7 +9,7 @@ import { createHelperObjectProvider } from '../src/helper-object-provider.ts';
 type Foo = { a: number };
 
 const fooHelperObjectProvider = createHelperObjectProvider(
-  (model: Reactive<Foo>) => {
+  (model: Foo) => {
     const nonReactive = {
       // This is a non-reactive property, but it is still publicly accessible.
       c: 1000,

@@ -11,7 +11,7 @@ type Foo = { a: number };
 // using a style similar to a vue composable for the augments
 {
   console.log('Example 1');
-  const getAugmentedFoo = createCachedAugmenter((model: Reactive<Foo>) => {
+  const getAugmentedFoo = createCachedAugmenter((model: Foo) => {
     // Insert here code very similar to the code for a vue composable.
     //
     // (To see what a composable is, see
@@ -67,7 +67,7 @@ type Foo = { a: number };
 // Using a class style for the augments. This is the harder way because of some gotchas.
 {
   console.log('Example 2');
-  const getAugmentedFoo = createCachedAugmenter((model: Reactive<Foo>) => {
+  const getAugmentedFoo = createCachedAugmenter((model: Foo) => {
     return new FooAugments(model);
   });
 

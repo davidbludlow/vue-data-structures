@@ -2,7 +2,7 @@
 // https://github.com/davidbludlow/vue-data-structures/blob/main/src/helper-object-provider.ts
 // which had an MIT license, when it was copied.
 
-import { type Reactive, reactive } from 'vue';
+import { type Reactive, reactive, type UnwrapNestedRefs } from 'vue';
 
 /** Creates helper object provider. When run, a helper object provider will
  * create a helper object for a given `model` object, or, if a helper object has
@@ -15,19 +15,19 @@ import { type Reactive, reactive } from 'vue';
  * https://github.com/davidbludlow/vue-data-structures/#helperObjectProvider
  * for more information. */
 export function createHelperObjectProvider<
-  TModel extends object,
+  TModel extends UnwrapNestedRefs<object>,
   THelper extends object,
 >(
-  factory: (model: Reactive<TModel>) => THelper,
-): (model: TModel | Reactive<TModel>) => Reactive<THelper> {
+  factory: (model: TModel) => THelper,
+): (model: TModel) => Reactive<THelper> {
   // Do not worry about the performance of `WeakMap`. Vue already uses `WeakMap`
   // extremely frequently (like every time you use a reactive object).
-  const cache = new WeakMap<Reactive<TModel>, Reactive<THelper>>();
-  return (model: TModel | Reactive<TModel>): Reactive<THelper> => {
+  const cache = new WeakMap<TModel, Reactive<THelper>>();
+  return (model: TModel): Reactive<THelper> => {
     /** `reactiveModel === model` will be true if `model` was already reactive.
      * (Vue 3 internally uses `WeakMap` to cache reactive `Proxy`s to make that
      * possible.) */
-    const reactiveModel = reactive(model) as Reactive<TModel>;
+    const reactiveModel = reactive(model) as TModel;
     const cached = cache.get(reactiveModel);
     if (cached) return cached;
     // Calling `reactive()` on it will make it so you do not need to call

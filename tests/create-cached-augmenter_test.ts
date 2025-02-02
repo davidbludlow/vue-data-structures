@@ -1,5 +1,5 @@
 import { assertEquals } from 'https://deno.land/std/testing/asserts.ts';
-import { computed, type Reactive, reactive, ref, watchEffect } from 'vue';
+import { computed, reactive, ref, watchEffect } from 'vue';
 import { createCachedAugmenter } from '../src/create-cached-augmenter.ts';
 
 type Foo = { a: number };
@@ -9,7 +9,7 @@ function wait() {
 }
 
 Deno.test('createCachedAugmenter should create augmented object with composition style', async () => {
-  const getAugmentedFoo = createCachedAugmenter((model: Reactive<Foo>) => {
+  const getAugmentedFoo = createCachedAugmenter((model: Foo) => {
     const b = ref(100);
     const sum = computed(() => model.a + b.value);
     function incrementB() {
@@ -46,7 +46,7 @@ Deno.test('createCachedAugmenter should create augmented object with composition
 });
 
 Deno.test('createCachedAugmenter should create augmented object using class style', async () => {
-  const getAugmentedFoo = createCachedAugmenter((model: Reactive<Foo>) => {
+  const getAugmentedFoo = createCachedAugmenter((model: Foo) => {
     return new FooAugments(model);
   });
 
@@ -54,7 +54,7 @@ Deno.test('createCachedAugmenter should create augmented object using class styl
     b = 100;
     readonly sum: number;
 
-    constructor(private model: Reactive<Foo>) {
+    constructor(private model: Foo) {
       const reactiveThis = reactive(this);
       // COMPUTED NOT RECOMMENDED IN CLASS STYLE because this is too awkward.
       this.sum = computed(() => {
@@ -99,7 +99,7 @@ Deno.test('createCachedAugmenter should create augmented object using class styl
 
 Deno.test('createCachedAugmenter should handle additionalParams', async () => {
   const getAugmentedFoo = createCachedAugmenter(
-    (model: Reactive<Foo>, additionalAddend: number) => {
+    (model: Foo, additionalAddend: number) => {
       const b = ref(10);
       const sum = computed(() => model.a + b.value + additionalAddend);
       return { b, sum };
@@ -117,7 +117,7 @@ Deno.test('createCachedAugmenter should handle additionalParams', async () => {
 });
 
 Deno.test('createCachedAugmenter should support iteration and JSON serialization', async () => {
-  const getAugmentedFoo = createCachedAugmenter((model: Reactive<Foo>) => {
+  const getAugmentedFoo = createCachedAugmenter((model: Foo) => {
     const b = ref(100);
     const sum = computed(() => model.a + b.value);
     function incrementB() {

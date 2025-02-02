@@ -1,11 +1,11 @@
 import { assertEquals } from 'https://deno.land/std@0.106.0/testing/asserts.ts';
-import { computed, type Reactive, ref, watchEffect } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
 import { createHelperObjectProvider } from '../src/helper-object-provider.ts';
 
 type Foo = { a: number };
 
 const fooHelperObjectProvider = createHelperObjectProvider(
-  (model: Reactive<Foo>) => {
+  (model: Foo) => {
     const nonReactive = {
       c: 1000,
     };
