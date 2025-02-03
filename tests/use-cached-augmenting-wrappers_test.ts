@@ -100,24 +100,24 @@ Deno.test('useCachedAugmentingWrappers should create data wrapper using class st
   assertEquals(log, 'a: 11, b: 100, sum: 111');
 });
 
-// Deno.test('useCachedAugmentingWrappers should handle additionalParams', async () => {
-//   const getFooWrapper = useCachedAugmentingWrappers(
-//     (foo: Foo, additionalAddend: number) => {
-//       const b = ref(10);
-//       const sum = computed(() => foo.a + b.value + additionalAddend);
-//       return { b, sum };
-//     },
-//   );
+Deno.test('useCachedAugmentingWrappers should handle additionalParams', async () => {
+  const getFooWrapper = useCachedAugmentingWrappers(
+    (foo: Foo, additionalAddend: number) => {
+      const b = ref(10);
+      const sum = computed(() => foo.a + b.value + additionalAddend);
+      return { b, sum };
+    },
+  );
 
-//   const exampleFoo = { a: 1 };
-//   const fooWrapper = getFooWrapper(exampleFoo, 100);
+  const exampleFoo = { a: 1 };
+  const fooWrapper = getFooWrapper(exampleFoo, 100);
 
-//   assertEquals(fooWrapper.sum, 111);
-//   fooWrapper.a++;
-//   assertEquals(fooWrapper.sum, 112);
-//   fooWrapper.b--;
-//   assertEquals(fooWrapper.sum, 111);
-// });
+  assertEquals(fooWrapper.sum, 111);
+  fooWrapper.a++;
+  assertEquals(fooWrapper.sum, 112);
+  fooWrapper.b--;
+  assertEquals(fooWrapper.sum, 111);
+});
 
 Deno.test('useAugmentingWrapperFactory makes a factory that makes objects that `reactive()` would detect as already being reactive', async () => {
   const getFooWrapper = useAugmentingWrapperFactory(

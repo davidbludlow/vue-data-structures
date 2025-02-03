@@ -59,15 +59,20 @@ import { useCachedWrappers } from './use-cached-wrappers.ts';
 export function useCachedAugmentingWrappers<
   TData extends UnwrapNestedRefs<object>,
   TAugmentedProperties extends object,
->(wrapperDefinition: (data: TData) => TAugmentedProperties): (
-  data: TData,
-) => Reactive<TAugmentedProperties> & Omit<TData, keyof TAugmentedProperties> {
+  TAdditionalParams extends any[],
+>(
+  wrapperDefinition: (
+    data: TData,
+    ...additionalParams: TAdditionalParams
+  ) => TAugmentedProperties,
+) {
   return useCachedWrappers(
-    useAugmentingWrapperFactory<TData, TAugmentedProperties, []>(
+    useAugmentingWrapperFactory<TData, TAugmentedProperties, TAdditionalParams>(
       wrapperDefinition,
     ),
   ) as (
     data: TData,
+    ...additionalParams: TAdditionalParams
   ) => Reactive<TAugmentedProperties> & Omit<TData, keyof TAugmentedProperties>;
 }
 

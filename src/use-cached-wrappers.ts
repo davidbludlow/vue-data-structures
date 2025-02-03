@@ -15,20 +15,24 @@ import { type Reactive, reactive, type UnwrapNestedRefs } from 'vue';
 export function useCachedWrappers<
   TData extends UnwrapNestedRefs<object>,
   TWrapper extends object,
+  TAdditionalParams extends any[],
 >(
-  factory: (data: TData) => TWrapper,
-): (data: TData) => Reactive<TWrapper> {
+  factory: (data: TData, ...additionalParams: TAdditionalParams) => TWrapper,
+): (data: TData, ...additionalParams: TAdditionalParams) => Reactive<TWrapper> {
   // Do not worry about the performance of `WeakMap`. Vue already uses `WeakMap`
   // extremely frequently (like every time you use a reactive object).
   const cache = new WeakMap<TData, Reactive<TWrapper>>();
-  return (data: TData): Reactive<TWrapper> => {
+  return (
+    data: TData,
+    ...additionalParams: TAdditionalParams
+  ): Reactive<TWrapper> => {
     /** `reactiveData === data` will be true if `data` was already reactive.
      * (Vue 3 internally uses `WeakMap` to cache reactive `Proxy`s to make that
      * possible.) */
     const reactiveData = reactive(data) as TData;
     const cached = cache.get(reactiveData);
     if (cached) return cached;
-    const factoryOutput = factory(reactiveData);
+    const factoryOutput = factory(reactiveData, ...additionalParams);
     // Calling `reactive()` on it will make it so you do not need to call
     // `.value` on the refs and computed. (See
     // https://vuejs.org/api/reactivity-core.html#reactive for proof of that.)
