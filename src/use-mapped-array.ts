@@ -34,13 +34,14 @@ export function useMappedArray<T extends UnwrapNestedRefs<any>, R>(
       // If accessing an integer index, apply the factory function
       if (typeof prop === 'string' && /^\d+$/.test(prop)) {
         const index = parseInt(prop);
-        if (index < target.length) {
-          const result = factory(target[index] as T);
+        const dataElement = target[index];
+        if (dataElement !== undefined) {
+          const result = factory(dataElement as T);
           if (indexPropertyName) {
             (result[indexPropertyName] as number) = index;
           }
           return result;
-        }
+        } else return undefined;
       }
 
       // For all other properties (length, array methods, etc.), return the original
