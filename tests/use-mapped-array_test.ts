@@ -20,7 +20,7 @@ Deno.test('useMappedArray - basic transformation', () => {
   });
 
   // Execute
-  const mapped = useMappedArray(originalArray, factory);
+  const mapped = useMappedArray(originalArray, undefined, factory);
 
   // Verify
   assertEquals(mapped.length, 3);
@@ -37,7 +37,7 @@ Deno.test('useMappedArray - preserves array methods', () => {
   const factory = (num: number) => ({ value: num, doubled: num * 2 });
 
   // Execute
-  const mapped = useMappedArray(originalArray, factory);
+  const mapped = useMappedArray(originalArray, undefined, factory);
 
   // Verify
   assertEquals(mapped.length, 3);
@@ -63,7 +63,7 @@ Deno.test('useMappedArray - reactive to array changes', () => {
   });
 
   // Execute
-  const mapped = useMappedArray(originalArray, factory);
+  const mapped = useMappedArray(originalArray, undefined, factory);
 
   // Initial verification
   assertEquals(mapped.length, 1);
@@ -100,7 +100,7 @@ Deno.test('useMappedArray - integration with useCachedWrappers', () => {
   }));
 
   // Execute
-  const mapped = useMappedArray(originalArray, createWrapper);
+  const mapped = useMappedArray(originalArray, undefined, createWrapper);
 
   // Verify
   assertEquals(mapped[0].displayName, 'Display: Item 1');
@@ -121,7 +121,7 @@ Deno.test('useMappedArray - out of bounds access', () => {
   const factory = (item: { id: number }) => ({ value: item.id * 10 });
 
   // Execute
-  const mapped = useMappedArray(originalArray, factory);
+  const mapped = useMappedArray(originalArray, undefined, factory);
 
   // Verify
   assertEquals(mapped.length, 1);
@@ -148,7 +148,7 @@ Deno.test('useMappedArray - complex reactive updates', () => {
     });
 
   // Execute
-  const mapped = useMappedArray(originalArray, factory);
+  const mapped = useMappedArray(originalArray, undefined, factory);
 
   // Initial state
   assertEquals(mapped[0].isPositive, false);
@@ -163,4 +163,38 @@ Deno.test('useMappedArray - complex reactive updates', () => {
   originalArray[1].count = 0;
   assertEquals(mapped[1].count, 0);
   assertEquals(mapped[1].isPositive, false);
+});
+
+Deno.test('useMappedArray - with indexPropertyName', () => {
+  // Setup
+  const originalArray = reactive([
+    { id: 1, name: 'Item 1' },
+    { id: 2, name: 'Item 2' },
+    { id: 3, name: 'Item 3' },
+  ]);
+
+  const factory = (item: { id: number; name: string }) => ({
+    original: item,
+    upper: item.name.toUpperCase(),
+    index: -1,
+  });
+
+  // Execute
+  const mapped = useMappedArray(originalArray, 'index', factory);
+
+  // Verify
+  assertEquals(mapped.length, 3);
+  assertEquals(mapped[0].upper, 'ITEM 1');
+  assertEquals(mapped[0].index, 0);
+  assertEquals(mapped[1].upper, 'ITEM 2');
+  assertEquals(mapped[1].index, 1);
+  assertEquals(mapped[2].upper, 'ITEM 3');
+  assertEquals(mapped[2].index, 2);
+
+  // Verify index updates when array changes
+  originalArray.shift();
+  assertEquals(mapped[0].original.id, 2);
+  assertEquals(mapped[0].index, 0);
+  assertEquals(mapped[1].original.id, 3);
+  assertEquals(mapped[1].index, 1);
 });

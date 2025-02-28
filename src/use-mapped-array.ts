@@ -9,6 +9,7 @@ import { type Reactive, reactive, type UnwrapNestedRefs } from 'vue';
  * This function is designed to be used with `useCachedWrappers` for efficient element transformation.
  *
  * @param reactiveArray The input reactive array
+ * @param indexPropertyName Optional property name to store the array index on each returned object
  * @param factory A function to transform array elements
  * @returns A proxy that behaves like the original array but returns transformed elements
  *
@@ -25,6 +26,7 @@ import { type Reactive, reactive, type UnwrapNestedRefs } from 'vue';
  */
 export function useMappedArray<T extends UnwrapNestedRefs<any>, R>(
   reactiveArray: Reactive<T[]>,
+  indexPropertyName: undefined | keyof R,
   factory: (item: T) => R,
 ): R[] {
   return new Proxy(reactive(reactiveArray), {
@@ -33,7 +35,11 @@ export function useMappedArray<T extends UnwrapNestedRefs<any>, R>(
       if (typeof prop === 'string' && /^\d+$/.test(prop)) {
         const index = parseInt(prop);
         if (index < target.length) {
-          return factory(target[index] as T);
+          const result = factory(target[index] as T);
+          if (indexPropertyName) {
+            (result[indexPropertyName] as number) = index;
+          }
+          return result;
         }
       }
 
