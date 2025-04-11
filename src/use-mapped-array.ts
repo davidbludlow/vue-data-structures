@@ -31,6 +31,19 @@ export function useMappedArray<T extends UnwrapNestedRefs<any>, R>(
 ): R[] {
   return new Proxy(reactive(reactiveArray), {
     get(target, prop, receiver) {
+      if (prop === Symbol.iterator) {
+        return function* () {
+          const length = target.length;
+          for (let i = 0; i < length; i++) {
+            const dataElement = target[i];
+            const result = factory(dataElement as T);
+            if (indexPropertyName) {
+              (result[indexPropertyName] as number) = i;
+            }
+            yield result;
+          }
+        };
+      }
       // If accessing an integer index, apply the factory function
       if (typeof prop === 'string' && /^\d+$/.test(prop)) {
         const index = parseInt(prop);
