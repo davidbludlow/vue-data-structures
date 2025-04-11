@@ -101,30 +101,40 @@ export function useAugmentingWrapperFactory<
     // The `reactive()` is to unwrap any vue `Ref`s, so that `.value` is not
     // needed.
     const reactiveExtensions = reactive(extensions);
-    const proxy = new Proxy(reactiveData, {
-      get(target, property) {
-        if (property in extensions) {
-          return reactiveExtensions[property];
-        }
-        return reactiveData[property];
-      },
-      set(target, property, value) {
-        if (property in extensions) {
-          return Reflect.set(
-            reactiveExtensions,
-            property,
-            value,
-            reactiveExtensions,
-          );
-        }
-        return Reflect.set(reactiveData, property, value, reactiveData);
-      },
-      has(target, property) {
-        return property in extensions || Reflect.has(target, property);
-      },
-    }) as unknown as
+    const proxy = new Proxy(
+      reactiveData,
+      new AugmentingWrapperHandler(extensions, reactiveExtensions),
+    ) as unknown as
       & Reactive<TAugmentedProperties>
       & Omit<TData, keyof TAugmentedProperties>;
     return proxy;
   };
+}
+
+class AugmentingWrapperHandler<Target extends object>
+  implements ProxyHandler<Target> {
+  constructor(public extensions: object, public reactiveExtensions: object) {}
+
+  get(reactiveData: Target, property: string | symbol) {
+    if (property in this.extensions) {
+      // @ts-ignore
+      return this.reactiveExtensions[property];
+    }
+    // @ts-ignore
+    return reactiveData[property];
+  }
+  set(reactiveData: Target, property: string | symbol, value: any) {
+    if (property in this.extensions) {
+      return Reflect.set(
+        this.reactiveExtensions,
+        property,
+        value,
+        this.reactiveExtensions,
+      );
+    }
+    return Reflect.set(reactiveData, property, value, reactiveData);
+  }
+  has(reactiveData: Target, property: string | symbol) {
+    return property in this.extensions || Reflect.has(reactiveData, property);
+  }
 }
