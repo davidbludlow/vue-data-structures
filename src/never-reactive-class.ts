@@ -5,8 +5,9 @@
 import { RawSymbol } from '@vue/reactivity';
 import { toRaw } from 'vue';
 
-/** Extend this class to make it so a reactive proxy will never be made for
- * instances of your class. The entire source code of `NeverReactiveClass` is:
+/** Extend this class to make instances of your class shallowly never-reactive.
+ *
+ * The entire source code of `NeverReactiveClass` is:
  * ```ts
  * export class NeverReactiveClass {
  *   // This is only here to make TypeScript happy
@@ -17,7 +18,9 @@ import { toRaw } from 'vue';
  *   }
  * }
  * ```
- */
+ *
+ * You store data on it that uses `reactive`, `ref`, and `computed` and have
+ * reactivity that way. */
 export class NeverReactiveClass {
   // This is only here to make TypeScript happy
   [RawSymbol] = true as const;
