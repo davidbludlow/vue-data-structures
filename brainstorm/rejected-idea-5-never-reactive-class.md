@@ -1,3 +1,7 @@
+This doesn't work because `RawSymbol` isn't a real export. Todo: try harder to
+make this work.
+
+````ts
 // This file was copied from
 // https://github.com/davidbludlow/vue-data-structures/blob/main/src/never-reactive-class.ts
 // which had an MIT license, when it was copied.
@@ -29,3 +33,4 @@ export class NeverReactiveClass {
     toRaw(this);
   }
 }
+````
