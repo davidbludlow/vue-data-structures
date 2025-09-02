@@ -1,10 +1,6 @@
-# `aliasOfComputed` (Previously Failed Idea - Now Solved!)
+# `aliasOfComputed` (Failed Idea)
 
-**UPDATE: This issue has been resolved!** The problem described below has been solved by converting `aliasOfComputed` properties into getters/setters in the `ReactiveClass` constructor.
-
----
-
-`ReactiveClass` used to have a problem with something called `aliasOfComputed`. The original implementation looked like this:
+`ReactiveClass` used to use have something called `aliasOfComputed` so it used to look like this:
 
 ````ts
 // This file was copied from
@@ -62,31 +58,5 @@ class MyClass extends ReactiveClass {
 ```
 
 When you call `myInstance.doubleFooAsAString = 10`, then vue will call the getter for `doubleFooAsAString` to get the old value. When it does that, `this` inside the getter is not reactive, so `this.doubleFoo` is still a ref object instead of being unwrapped to its value, causing methods like `.toPrecision()` to fail.
-
-## Solution
-
-This problem has been solved! The current implementation of `ReactiveClass` converts `aliasOfComputed` properties (which are computed refs) into proper getters and setters during construction:
-
-```ts
-constructor() {
-  // Turn the `aliasOfComputed` properties into getters, because reactive()
-  // doesn't unwrap refs in all cases (specifically when getters are called
-  // during setters to get old values).
-  for (const [key, value] of Object.entries(this)) {
-    if (isRef(value)) {
-      Object.defineProperty(this, key, {
-        get: () => value.value,
-        set: (newValue) => {
-          value.value = newValue;
-        },
-      });
-    }
-  }
-
-  return reactive(this);
-}
-```
-
-This ensures that `aliasOfComputed` properties work correctly even when getters are called during setters, because the getter now directly accesses `value.value` rather than relying on Vue's ref unwrapping behavior.
 
 You can see this problem demonstrated in the test file: [`tests/old-reactive-class-corner-case_test.ts`](../tests/old-reactive-class-corner-case_test.ts)
