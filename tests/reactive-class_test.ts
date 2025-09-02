@@ -11,7 +11,7 @@ class TestReactiveClass extends ReactiveClass {
 
   // Test getter/setter that might trigger the old reactivity issue
   get doubleFooAsString() {
-    return this.doubleFoo.toString();
+    return this.doubleFoo.toPrecision(4);
   }
 
   set doubleFooAsString(value: string) {
@@ -58,7 +58,7 @@ Deno.test('ReactiveClass with aliasOfComputed - getter/setter reactivity (the cr
   // because `this` wasn't reactive during setter execution
 
   // Initial state
-  assertEquals(instance.doubleFooAsString, '6');
+  assertEquals(instance.doubleFooAsString, '6.000');
 
   // Set via the setter - this used to fail with aliasOfComputed
   instance.doubleFooAsString = '30';
@@ -66,7 +66,7 @@ Deno.test('ReactiveClass with aliasOfComputed - getter/setter reactivity (the cr
   // Verify the setter worked and computed properties updated
   assertEquals(instance.foo, 15); // 30 / 2
   assertEquals(instance.doubleFoo, 30); // 15 * 2
-  assertEquals(instance.doubleFooAsString, '30');
+  assertEquals(instance.doubleFooAsString, '30.00');
 });
 
 Deno.test('ReactiveClass with aliasOfComputed - complex getter/setter interactions', () => {
@@ -76,18 +76,18 @@ Deno.test('ReactiveClass with aliasOfComputed - complex getter/setter interactio
   instance.doubleFooAsString = '20';
   assertEquals(instance.foo, 10);
   assertEquals(instance.doubleFoo, 20);
-  assertEquals(instance.doubleFooAsString, '20');
+  assertEquals(instance.doubleFooAsString, '20.00');
 
   // Change the underlying property directly
   instance.foo = 8;
   assertEquals(instance.doubleFoo, 16);
-  assertEquals(instance.doubleFooAsString, '16');
+  assertEquals(instance.doubleFooAsString, '16.00');
 
   // Use setter again
   instance.doubleFooAsString = '40';
   assertEquals(instance.foo, 20);
   assertEquals(instance.doubleFoo, 40);
-  assertEquals(instance.doubleFooAsString, '40');
+  assertEquals(instance.doubleFooAsString, '40.00');
 });
 
 Deno.test('ReactiveClass with aliasOfComputed - TypeScript types', () => {
