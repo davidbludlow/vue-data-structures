@@ -92,4 +92,5 @@
   // We don't have .vue files so hybrid mode isn't needed. This will reduce
   // complication.
   "vue.server.hybridMode": false,
+  "dprint.path": "./node_modules/.bin/dprint",
 }
