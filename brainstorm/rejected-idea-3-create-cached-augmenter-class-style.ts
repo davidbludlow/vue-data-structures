@@ -1,4 +1,4 @@
-import { assertEquals } from 'https://deno.land/std/testing/asserts.ts';
+import { assertEquals } from 'https://deno.land/std/assert/assert_equals.ts';
 import { computed, reactive, ref, watchEffect } from 'vue';
 import { type Reactive } from 'vue';
 
