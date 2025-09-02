@@ -66,10 +66,7 @@ export function useMappedArray<T extends UnwrapNestedRefs<any>, R>(
 ## Tests
 
 ```ts
-import {
-  assertEquals,
-  assertStrictEquals,
-} from 'https://deno.land/std/assert/assert_equals.ts';
+import { assertEquals, assertStrictEquals } from 'jsr:@std/assert';
 import { computed, reactive } from 'vue';
 import { useCachedWrappers } from '../src/use-cached-wrappers.ts';
 import { useMappedArray } from '../src/use-mapped-array.ts';

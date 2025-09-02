@@ -1,5 +1,5 @@
 ```ts
-import { assertEquals } from 'https://deno.land/std/assert/assert_equals.ts';
+import { assertEquals } from 'jsr:@std/assert';
 import { computed, reactive, ref } from 'vue';
 
 /**
