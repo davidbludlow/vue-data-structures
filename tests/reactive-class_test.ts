@@ -303,3 +303,117 @@ Deno.test('ReactiveClass efficient reactivity - no unnecessary recomputations', 
   assertEquals(double1, double2);
   assertEquals(sum1, sum2);
 });
+
+Deno.test('ReactiveClass computed optimization - watcher does not trigger when computed value unchanged', async () => {
+  class OptimizationTestClass extends ReactiveClass {
+    a = 2;
+    b = 2;
+
+    // This computed will return the same value when a=2,b=2 and when a=1,b=3
+    getSum = computedAsAFunction(() => this.a + this.b);
+
+    // This computed will be true for even sums, false for odd sums
+    getIsEven = computedAsAFunction(() => this.getSum() % 2 === 0);
+  }
+
+  const instance = new OptimizationTestClass();
+
+  let watchEffectCount = 0;
+  let lastIsEven = false;
+
+  // Watch the computed that depends on the sum
+  watchEffect(() => {
+    watchEffectCount++;
+    lastIsEven = instance.getIsEven();
+  });
+
+  await wait();
+  assertEquals(watchEffectCount, 1);
+  assertEquals(lastIsEven, true); // 2 + 2 = 4, which is even
+
+  // Now change a and b such that the sum stays the same (4)
+  // a=1, b=3 should give sum=4, so isEven should still be true
+  instance.a = 1;
+  instance.b = 3;
+
+  await wait();
+
+  // The key test: watchEffect should NOT have triggered again
+  // because even though a and b changed, the computed getSum() still returns 4,
+  // and therefore getIsEven() still returns true
+  assertEquals(watchEffectCount, 1); // Should still be 1, not 2
+  assertEquals(lastIsEven, true);
+  assertEquals(instance.getSum(), 4);
+
+  // Now make a change that actually changes the final computed result
+  instance.a = 2; // Now sum = 2 + 3 = 5, which is odd, so isEven = false
+
+  await wait();
+  assertEquals(watchEffectCount, 2); // NOW it should trigger because true -> false
+  assertEquals(lastIsEven, false);
+
+  // Test another change that keeps the result the same
+  instance.b = 1; // Now sum = 2 + 1 = 3, which is still odd, so isEven = false
+
+  await wait();
+  assertEquals(watchEffectCount, 2); // Should still be 2, since false -> false
+  assertEquals(lastIsEven, false);
+
+  // Finally, make a change that changes isEven from false to true
+  instance.a = 3; // Now sum = 3 + 1 = 4, which is even, so isEven = true
+
+  await wait();
+  assertEquals(watchEffectCount, 3); // NOW it should trigger again
+  assertEquals(lastIsEven, true);
+});
+
+Deno.test('ReactiveClass getter/setter optimization - watcher unfortunately does trigger when setter results in same value', async () => {
+  // This test documents that Vue currently does NOT optimize away setter calls
+  // that result in the same underlying value. Ideally, setting doubleFooAsString
+  // to "6.0" (which results in foo=3, the same value it already has) would not
+  // trigger watchers, but unfortunately Vue triggers reactivity even for
+  // same-value assignments.
+
+  const instance = new TestReactiveClass();
+
+  let watchEffectCount = 0;
+  let lastValue = '';
+
+  // Watch the doubleFooAsString getter/setter property
+  watchEffect(() => {
+    watchEffectCount++;
+    lastValue = instance.doubleFooAsString;
+  });
+
+  await wait();
+  assertEquals(watchEffectCount, 1);
+  assertEquals(lastValue, '6.000'); // Initial: foo=3, so double=6, toPrecision(4)='6.000'
+
+  // Test 1: Set doubleFooAsString to "6.0" which results in the same final value
+  // Setter: this.foo = Number("6.0") / 2 = 3 (same as current value)
+  // Unfortunately, Vue will trigger watchers even though foo doesn't actually change
+  instance.doubleFooAsString = '6.0';
+
+  await wait();
+
+  // Vue currently triggers even for same-value assignments (we wish it didn't!)
+  assertEquals(watchEffectCount, 2); // Would be nice if this stayed 1
+  assertEquals(lastValue, '6.000');
+  assertEquals(instance.foo, 3);
+
+  // Test 2: Set it to a value that actually changes foo (this should trigger)
+  instance.doubleFooAsString = '8.0';
+
+  await wait();
+  assertEquals(watchEffectCount, 3); // This rightfully triggers
+  assertEquals(lastValue, '8.000');
+  assertEquals(instance.foo, 4); // 8.0 / 2 = 4
+
+  // Test 3: Set it to the same value (unfortunately does trigger)
+  instance.doubleFooAsString = '8.000';
+
+  await wait();
+  assertEquals(watchEffectCount, 4); // Wish this wasn't so
+  assertEquals(lastValue, '8.000');
+  assertEquals(instance.foo, 4);
+});
