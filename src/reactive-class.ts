@@ -46,11 +46,11 @@ export class ReactiveClass {
  * class MyClass extends ReactiveClass {
  *   foo = 4;
  *
- *   // Simple way
+ *   // Simple way:
  *   getDoubleFoo = computedAsAFunction(() => this.foo * 2);
  *
- *   // Getter/setter way
- *   _getTripleFoo = computedAsAFunction(() => this.foo * 3);
+ *   // Getter/setter way:
+ *   _getTripleFoo = computedAsAFunction(() => this.foo * 3); // ← Don't mark this `private`
  *   get tripleFoo() {
  *     return this._getTripleFoo();
  *   }
