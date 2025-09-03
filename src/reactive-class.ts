@@ -1,6 +1,6 @@
 // This file was copied from
 // https://github.com/davidbludlow/vue-data-structures/blob/main/src/reactive-class.ts
-// which had an MIT license, when it was copied.
+// which had an MIT license when it was copied.
 
 import { computed, reactive } from 'vue';
 
@@ -28,6 +28,19 @@ import { computed, reactive } from 'vue';
  * - Don't use private properties (`#` or `private` keyword). If you do, then
  *   there will be problems where `new ReactiveFoo()` will not have the same
  *   TypeScript type as `reactive(new ReactiveFoo())`.
+ *
+ * Less-certain tips:
+ * - Sometimes it is nicer to have regular getters, not backed by
+ *   `computedAsAFunction`. It makes for cleaner code. Someday, somebody should
+ *   do some research to determine if it is possible for a regular getter, in
+ *   some circumstances, to be more performant than a computed. (Though,
+ *   obviously computed would be more performant in many circumstances.)
+ * - It might be better to make a composable instead of using `ReactiveClass`.
+ * - Don't use `watch` or `watchEffect` in the constructor of a `ReactiveClass`
+ *   unless you know what you are doing with effect scopes. The effect scope
+ *   will control when the watcher is disposed. Even if you do know how effect
+ *   scopes work, it still might be better to put watchers elsewhere to make
+ *   their disposal timing more obvious to other programmers.
  */
 export class ReactiveClass {
   constructor() {
