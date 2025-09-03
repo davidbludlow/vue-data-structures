@@ -36,7 +36,7 @@ import { computed, reactive } from 'vue';
  *   some circumstances, to be more performant than a computed. (Though,
  *   obviously computed would be more performant in many circumstances.)
  * - It might be better to make a composable instead of using `ReactiveClass`.
- * - Don't use `watch` or `watchEffect` in the constructor of a `ReactiveClass`
+ * - Don't use `watch` or `watchEffect` in the constructor of a `ReactiveClass`,
  *   unless you know what you are doing with effect scopes. The effect scope
  *   will control when the watcher is disposed. Even if you do know how effect
  *   scopes work, it still might be better to put watchers elsewhere to make
